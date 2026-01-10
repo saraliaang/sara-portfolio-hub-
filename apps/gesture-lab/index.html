@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cosmo Hub - Gesture Test</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Main Content Stage -->
+      <div id="content-stage">
+        <header>
+            <h1>Cosmo Hub</h1>
+            <p>Use hand gestures to explore</p>
+        </header>
+        
+        <div id="galaxy-scroll-container">
+            <div id="galaxy-list">
+                <!-- Galaxy Cards will be injected or hardcoded here -->
+                <div class="galaxy-card" data-id="nebula">
+                    <div class="card-content">
+                        <h2>Nebula Prime</h2>
+                        <p>A region of interstellar dust.</p>
+                    </div>
+                </div>
+                <div class="galaxy-card" data-id="andromeda">
+                     <div class="card-content">
+                        <h2>Andromeda</h2>
+                        <p>Our nearest major neighbor.</p>
+                    </div>
+                </div>
+                <div class="galaxy-card" data-id="triangulum">
+                     <div class="card-content">
+                        <h2>Triangulum</h2>
+                        <p>The third-largest member.</p>
+                    </div>
+                </div>
+                <div class="galaxy-card" data-id="sombrero">
+                     <div class="card-content">
+                        <h2>Sombrero</h2>
+                        <p>Unbarred spiral galaxy.</p>
+                    </div>
+                </div>
+                 <div class="galaxy-card" data-id="whirlpool">
+                     <div class="card-content">
+                        <h2>Whirlpool</h2>
+                        <p>Interacting grand-design.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Overlays -->
+        <div id="gesture_overlay">
+           <!-- Cursor lives here -->
+           <div id="cursor"></div>
+           <!-- Status Pill -->
+            <div id="status_pill">Scanning...</div>
+            
+            <!-- Detail Modal (Initially Hidden) -->
+            <div id="detail-modal" class="hidden">
+                <div class="modal-content">
+                    <h2 id="modal-title">Galaxy Detail</h2>
+                    <p id="modal-desc">Description goes here.</p>
+                    <div class="modal-hints">
+                        <span>👋 Push to Dismiss</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Memory Modal (Summon) -->
+            <div id="memory-modal" class="hidden">
+                 <div class="modal-content memory">
+                    <h2>🌌 Deep Memory</h2>
+                    <p>You summoned a hidden memory!</p>
+                    <div class="modal-hints">
+                        <span>👋 Push to Dismiss</span>
+                    </div>
+                </div>
+            </div>
+      </div>
+
+      <!-- Minimized Debug View (Picture-in-Picture) -->
+      <div id="camera-pip">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="output_canvas"></canvas>
+        <div id="stats_overlay">Initializing...</div>
+        <button id="camera-toggle" class="icon-btn" title="Toggle Camera">📷</button>
+      </div>
+      
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

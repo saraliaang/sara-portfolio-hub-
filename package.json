@@ -1,0 +1,8 @@
+{
+  "name": "cosmo-hub-root",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

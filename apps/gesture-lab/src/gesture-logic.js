@@ -1,5 +1,6 @@
 export class GestureRecognizer {
   constructor() {
+    // State holds current gesture context across frames.
     this.state = {
       isAwake: false,
       lastGesture: null,
@@ -9,23 +10,24 @@ export class GestureRecognizer {
       isPinching: false, // NEW: Track if we are currently holding a pinch
     };
 
-    // Configuration thresholds
+    // Tunable thresholds for timing and distances.
+    // These values control how sensitive the gestures feel.
     this.config = {
       wakeHoldTime: 500, // ms
       pinchThreshold: 0.1, 
       pinchReleaseThreshold: 0.15,
       pinchHoldTime: 400, 
-      scrollThresholdX: 0.25, 
+      scrollThresholdX: 0.33, 
       scaleThreshold: 0.02, // NEW: Threshold for scale change (size change)
       scaleTimeWindow: 600, 
       cooldown: 500,
     };
 
-    // History for temporal gestures
+    // Recent history for time-based gestures (scale change, steadiness).
     this.history = []; // Array of {x, y, z, scale, time}
     this.maxHistoryTime = 1000; // Keep last 1s
 
-    // Gesture-specific state tracking
+    // Internal timers for gesture states.
     this.presenceStartTime = 0;
     this.pinchStartTime = 0;
     this.lastSummonTime = 0;
@@ -33,6 +35,7 @@ export class GestureRecognizer {
   }
 
   process(landmarks, timestamp) {
+    // If no hand is detected, reset state that depends on continuous tracking.
     if (!landmarks || landmarks.length === 0) {
       this.history = [];
       this.presenceStartTime = 0;
@@ -40,12 +43,14 @@ export class GestureRecognizer {
       return null;
     }
 
+    // MediaPipe returns 21 landmarks in a fixed order.
+    // Index 0 is the wrist, 8 is index fingertip, 4 is thumb tip.
     const hand = landmarks; 
     const palm = hand[0];
     const indexTip = hand[8];
     const thumbTip = hand[4];
 
-    // Add to history
+    // Track movement and scale over time for temporal gestures.
     const currentScale = this._getHandScale(hand); // Calculate Scale (Size)
     
     this.history.push({
@@ -71,14 +76,14 @@ export class GestureRecognizer {
     // Default progress
     result.pinchProgress = 0;
 
-    // 1. Check Hand Pose Update
+    // 1. Track pose changes for timing windows.
     const currentPose = this._getHandPose(hand);
     if (currentPose !== this.state.lastHandPose) {
         this.state.lastHandPose = currentPose;
         this.poseStartTime = timestamp;
     }
 
-    // 2. Check for Wake (Open Palm Steady)
+    // 2. Wake: open palm + steady for a short hold.
     if (!this.state.isAwake) {
       if (currentPose === 'OPEN' && this._isSteady(timestamp)) {
         if (this.presenceStartTime === 0) this.presenceStartTime = timestamp;
@@ -91,12 +96,13 @@ export class GestureRecognizer {
       } else {
         this.presenceStartTime = 0;
       }
+      // While asleep, we do not attempt other gestures.
       return result;
     }
 
     // --- Active Mode Gestures ---
 
-    // 3. Enter / Confirm (Pinch)
+    // 3. Confirm: pinch thumb + index and hold briefly.
     const pinchDist = this._distance(thumbTip, indexTip);
     
     // State Machine for Pinch
@@ -128,19 +134,20 @@ export class GestureRecognizer {
         }
     }
 
-    // 4. Joystick / Edge Scroll
-    // Only scroll if hand is OPEN (don't scroll while trying to pinch or summon)
-    // Also block if we are "holding" a pinched state (dragging?) - optional
+    // 4. Edge scroll: move palm to left/right edges of the frame.
+    // Only scroll when hand is OPEN to avoid accidental scrolls.
     if (currentPose === 'OPEN') {
-        const scroll = this._detectScroll(palm);
+        // Use the mirrored cursor position (index tip) for scroll so it matches what the user sees.
+        const cursorX = 1 - indexTip.x;
+        const scroll = this._detectScroll(cursorX);
         if (scroll) {
             result.gesture = scroll;
             return result;
         }
     }
 
-    // 5. Summon / Dismiss (Complex Physics - Scale Based)
-    // Only check if we haven't gestured recently
+    // 5. Summon/Dismiss: detect scale change (hand closer/farther).
+    // Only check if we haven't gestured recently.
     if (timestamp - this.state.lastGestureTime > this.config.cooldown) {
        const scaleGesture = this._detectComplexScale(timestamp, currentPose);
        if (scaleGesture) {
@@ -157,18 +164,17 @@ export class GestureRecognizer {
   // --- Helpers ---
 
   _distance(p1, p2) {
+    // Euclidean distance in normalized coordinate space.
     return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
   }
   
   _getHandScale(hand) {
-      // Use distance between Wrist (0) and Middle MCP (9) as a stable proxy for hand size/distance
+      // Use wrist to middle MCP as a proxy for hand size/distance.
       return this._distance(hand[0], hand[9]);
   }
 
   _getHandPose(hand) {
-    // Simple classifier: OPEN or CLOSED
-    // OPEN: Tips further from wrist than PIPs
-    // CLOSED: Tips close to Palm/MCPs
+    // Simple classifier: OPEN or CLOSED based on fingertip extension.
     const tips = [8, 12, 16, 20];
     const pips = [6, 10, 14, 18];
     const wrist = hand[0];
@@ -176,15 +182,13 @@ export class GestureRecognizer {
 
     let extendedCount = 0;
     for (let i = 0; i < 4; i++) {
-      // Check distance from wrist: Tip > PIP * 1.1 means extended
+      // Tip further from wrist than PIP implies an extended finger.
       if (this._distance(hand[tips[i]], wrist) > this._distance(hand[pips[i]], wrist) * 1.1) {
         extendedCount++;
       }
     }
 
-    // Check for Salt Pinch (Fist/Bunches fingers)
-    // Relaxed Check: < 2 extended fingers (Thumb doesn't count)
-    // Actually, improved check: Tips close to Palm Center (MCPs 9/13)
+    // Check for curled fingers (fist-ish).
     let curledCount = 0;
     // Check Index(8), Middle(12), Ring(16), Pinky(20)
     // against their PIPs (6, 10, 14, 18)
@@ -201,6 +205,7 @@ export class GestureRecognizer {
   }
 
   _isSteady(timestamp) {
+    // Check if palm movement is below a small threshold over a short window.
     if (this.history.length < 5) return false;
     const recent = this.history.slice(-5);
     const earliest = recent[0];
@@ -211,6 +216,7 @@ export class GestureRecognizer {
 
   _getScaleDelta(timestamp) {
      if (this.history.length < 5) return 0;
+     // Look at hand scale change within a short time window.
      const timeWindow = this.history.filter(h => timestamp - h.time < this.config.scaleTimeWindow);
      if (timeWindow.length < 2) return 0;
      const start = timeWindow[0];
@@ -218,24 +224,22 @@ export class GestureRecognizer {
      return end.scale - start.scale;
   }
 
-  _detectScroll(palm) {
-    if (palm.x < this.config.scrollThresholdX) return 'SCROLL_RIGHT'; 
-    if (palm.x > (1 - this.config.scrollThresholdX)) return 'SCROLL_LEFT';
+  _detectScroll(cursorX) {
+    // If the cursor is near the left or right edge, trigger scroll.
+    if (cursorX < this.config.scrollThresholdX) return 'SCROLL_LEFT'; 
+    if (cursorX > (1 - this.config.scrollThresholdX)) return 'SCROLL_RIGHT';
     return null;
   }
 
   _detectComplexScale(timestamp, currentPose) {
      const deltaScale = this._getScaleDelta(timestamp);
      
-     // SUMMON: Pull Back (Move Away) -> Hand Scaler Gets SMALLER (deltaScale is Negative)
-     // User requirement: "Salt Pinch" + Pull
-     // "Pull Back": moving away from camera.
+    // SUMMON: pull back (hand appears smaller) with a closed hand.
      if (deltaScale < -this.config.scaleThreshold && currentPose === 'CLOSED') {
          return 'SUMMON';
      }
 
-     // DISMISS: Push Forward (Move Close) -> Hand Scale Gets BIGGER (deltaScale is Positive)
-     // User requirement: "Throw" (Open) + Push
+    // DISMISS: push forward (hand appears bigger) with an open hand.
      if (deltaScale > this.config.scaleThreshold && currentPose === 'OPEN') {
         return 'DISMISS';
      }

@@ -1,5 +1,6 @@
 export class UI {
     constructor() {
+        // Cache commonly used DOM nodes once.
         this.canvas = document.getElementById('output_canvas');
         this.ctx = this.canvas.getContext('2d');
         this.cursor = document.getElementById('cursor');
@@ -8,16 +9,22 @@ export class UI {
         this.scrollContainer = document.getElementById('galaxy-scroll-container');
         this.detailModal = document.getElementById('detail-modal');
         this.memoryModal = document.getElementById('memory-modal');
+        this.guideModal = document.getElementById('guide-modal');
         this.modalOpen = false;
+        this.guideModalOpen = false;
         
         
-        // Clone items for infinite scroll illusion
+        // Set up UX behaviors and input fallbacks.
         this.initInfiniteScroll();
+        this.initPointerControls();
         this.initKeyboardControls();
         this.initCameraToggle();
+        this.initInteractionMode();
+        this.initGestureGuide();
     }
 
     initCameraToggle() {
+        // Allows hiding/showing the camera PIP and pausing inference.
         const btn = document.getElementById('camera-toggle');
         const pip = document.getElementById('camera-pip');
         let isHidden = false;
@@ -28,13 +35,7 @@ export class UI {
                 pip.classList.add('camera-hidden');
                 btn.innerText = '🚫';
                 btn.style.opacity = '0.5';
-                // Note: We are just hiding the UI, not stopping the stream completely 
-                // to avoid re-init complexity for this prototype. 
-                // But user asked to "switch it off". 
-                // Let's emit an event or callback if we wanted to stop the stream, 
-                // but just hiding the view is often what is meant by "get it out of the way".
-                // If they mean "stop processing", we'd need to pause the requestAnimationFrame loop in main.js.
-                // Let's dispatch a custom event on window logic.
+                // Dispatch a custom event so main.js can pause/resume the camera loop.
                 window.dispatchEvent(new CustomEvent('toggle-camera', { detail: { active: !isHidden } }));
             } else {
                 pip.classList.remove('camera-hidden');
@@ -46,17 +47,30 @@ export class UI {
     }
 
     initKeyboardControls() {
+        // Keyboard fallback for testing without gestures.
         document.addEventListener('keydown', (e) => {
-            // Mapping keys to gestures
+            // Mapping keys to gestures for non-camera testing.
             // Arrow Left/Right -> Scroll
             // Space/Enter -> Confirm/Click (on center item?) OR just generic 'CONFIRM' 
             // Escape -> Dismiss
             // M -> Summon Memory
-            
-            if (this.modalOpen) {
-                if (e.key === 'Escape') {
-                    this.handleInteraction({ gesture: 'DISMISS' });
+            const targetTag = e.target?.tagName;
+            if (targetTag && ['BUTTON', 'INPUT', 'TEXTAREA', 'SELECT'].includes(targetTag)) {
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                if (this.guideModalOpen) {
+                    this.closeGuideModal();
+                    return;
                 }
+                if (this.modalOpen) {
+                    this.handleInteraction({ gesture: 'DISMISS' });
+                    return;
+                }
+            }
+
+            if (this.modalOpen || this.guideModalOpen) {
                 return;
             }
 
@@ -69,11 +83,13 @@ export class UI {
                     break;
                 case 'Enter': 
                 case ' ':
+                case 'Spacebar':
+                    e.preventDefault();
                     // For keyboard click, we need a "focused" card. 
                     // Let's assume the center-most card is "focused" or just click the first hovered one?
                     // Without a cursor, we can't hover. 
                     // Let's "Activate" the card in the center of the screen.
-                    this.clickCenterCard();
+                    this.clickFocusedOrCenterCard();
                     break;
                 case 'm':
                 case 'M':
@@ -83,10 +99,111 @@ export class UI {
         });
     }
 
+    initPointerControls() {
+        // Mouse / touch fallback: click a card to open details.
+        const handlePointer = (e) => {
+            if (typeof e.button === 'number' && e.button !== 0) return;
+            const card = this.findCardFromEvent(e);
+            if (!card) return;
+            if (this.modalOpen || this.guideModalOpen) return;
+            this.triggerClick(card);
+        };
+
+        document.addEventListener('pointerup', handlePointer);
+        document.addEventListener('click', handlePointer);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+            const card = this.findCardFromEvent(e);
+            if (!card) return;
+            e.preventDefault();
+            if (this.modalOpen || this.guideModalOpen) return;
+            this.triggerClick(card);
+        });
+    }
+
+    initInteractionMode() {
+        // UI toggle for standard vs camera interaction.
+        this.modeButtons = Array.from(document.querySelectorAll('.mode-btn'));
+        this.setMode('standard', true);
+
+        this.modeButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const nextMode = btn.dataset.mode;
+                if (!nextMode) return;
+                if (nextMode === this.currentMode) return;
+                this.setMode(nextMode, false);
+            });
+        });
+    }
+
+    setMode(mode, silent) {
+        this.currentMode = mode;
+        document.body.setAttribute('data-mode', mode);
+        this.modeButtons.forEach((btn) => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+
+        if (!silent) {
+            // Tell main.js to start/stop camera based on the new mode.
+            window.dispatchEvent(new CustomEvent('interaction-mode', { detail: { mode } }));
+        }
+    }
+
+    initGestureGuide() {
+        // Modal that explains gesture controls.
+        const guideButton = document.getElementById('gesture-guide-btn');
+        const guideClose = document.getElementById('guide-close');
+
+        guideButton.addEventListener('click', () => this.openGuideModal());
+        guideClose.addEventListener('click', () => this.closeGuideModal());
+        this.guideModal.addEventListener('click', (e) => {
+            if (e.target === this.guideModal) {
+                this.closeGuideModal();
+            }
+        });
+    }
+
+    openGuideModal() {
+        this.guideModal.classList.remove('hidden');
+        this.guideModal.setAttribute('aria-hidden', 'false');
+        this.guideModalOpen = true;
+    }
+
+    closeGuideModal() {
+        this.guideModal.classList.add('hidden');
+        this.guideModal.setAttribute('aria-hidden', 'true');
+        this.guideModalOpen = false;
+    }
+
+    findCardFromEvent(e) {
+        // Walk up the DOM tree to find a galaxy card.
+        const path = e.composedPath ? e.composedPath() : [];
+        for (const el of path) {
+            if (el && el.classList && el.classList.contains('galaxy-card')) {
+                return el;
+            }
+        }
+        if (e.target && e.target.closest) {
+            return e.target.closest('.galaxy-card');
+        }
+        return null;
+    }
+
+    clickFocusedOrCenterCard() {
+         // Use the focused card if it exists, otherwise choose the center-most card.
+         const activeEl = document.activeElement;
+         if (activeEl && activeEl.classList && activeEl.classList.contains('galaxy-card')) {
+             this.triggerClick(activeEl);
+             return;
+         }
+         this.clickCenterCard();
+    }
+
     clickCenterCard() {
          const container = this.scrollContainer;
          const center = container.scrollLeft + (container.clientWidth / 2);
-         // Find card closest to center
+         // Find the card closest to the center of the scroll container.
          const cards = document.querySelectorAll('.galaxy-card');
          let closest = null;
          let minDist = Infinity;
@@ -108,6 +225,7 @@ export class UI {
     }
 
     updateStats(results, pose, zDelta) {
+        // Lightweight debug stats for the PIP overlay.
         if (!results || !results.handedness || results.handedness.length === 0) {
             this.statsOverlay.innerHTML = 'No Hand Detected';
             return;
@@ -125,11 +243,7 @@ export class UI {
 
     initInfiniteScroll() {
         const list = document.getElementById('galaxy-list');
-        // Simple infinite scroll: 
-        // We aren't really doing a seamless loop logic here because it's complex for a vanilla prototype.
-        // Instead: standard scroll.
-        // User requested: "Infinite loop from left to right".
-        // Let's duplicate the content x3.
+        // Simple infinite scroll illusion: duplicate content and jump to the middle.
         const originalContent = list.innerHTML;
         list.innerHTML = originalContent + originalContent + originalContent;
         
@@ -166,6 +280,7 @@ export class UI {
             this.statusPill.innerText = "System Active";
             this.statusPill.style.color = "#00e5ff"; // Neon Cyan
         } else {
+            // If no landmarks are found, hide the cursor and return early.
             this.statusPill.innerText = "Scanning...";
             this.statusPill.style.color = "#aaa";
             this.cursor.style.opacity = 0;
@@ -185,8 +300,7 @@ export class UI {
         if (!cursorPos) return;
         this.cursor.style.opacity = 1;
 
-        // Map normalized coords (0-1) to screen pixels
-        // Mirroring logic: x = (1 - x)
+        // Map normalized coords (0-1) to screen pixels with mirroring.
         const x = (1 - cursorPos.x) * window.innerWidth;
         const y = cursorPos.y * window.innerHeight;
         
@@ -204,8 +318,7 @@ export class UI {
             this.cursor.style.setProperty('--pinch-progress', '1');
         } else {
             this.cursor.classList.remove('clicking');
-            // Update progress visual (scale or border)
-            // We'll use a CSS variable to drive a conic gradient or scale
+            // Update progress visual for the pinch hold indicator.
             this.cursor.style.setProperty('--pinch-progress', progress.toFixed(2));
             
             if (progress > 0) {
@@ -219,7 +332,7 @@ export class UI {
     handleInteraction(result) {
         const { gesture, state } = result;
 
-        // 0. Global Modals (Summon/Dismiss)
+        // 0. Global Modals (Summon/Dismiss) take priority.
         if (gesture === 'DISMISS' && this.modalOpen) {
             this.closeModals();
             this.statusPill.innerText = "Dismissed!";
@@ -245,8 +358,7 @@ export class UI {
             this.checkInfiniteLoop();
         }
 
-        // 2. Hover Logic
-        // Perform hit test at cursor position
+        // 2. Hover logic: use cursor hit test to find card under pointer.
         const element = document.elementFromPoint(this.cursorScreenX, this.cursorScreenY);
         
         // Remove old hovers
@@ -281,11 +393,11 @@ export class UI {
         const totalWidth = container.scrollWidth;
         const viewWidth = container.clientWidth;
         
-        // If near left end, jump to middle
+        // If near left end, jump to middle.
         if (container.scrollLeft < 100) {
             container.scrollLeft = (totalWidth / 3) + 100;
         }
-        // If near right end, jump to middle
+        // If near right end, jump to middle.
         else if (container.scrollLeft > (totalWidth * 2 / 3) + viewWidth) {
              container.scrollLeft = (totalWidth / 3);
         }
@@ -300,6 +412,7 @@ export class UI {
     }
     
     openDetailModal(title, desc) {
+        // Populate and show the detail modal.
         document.getElementById('modal-title').innerText = title;
         document.getElementById('modal-desc').innerText = desc;
         this.detailModal.classList.remove('hidden');
@@ -307,11 +420,13 @@ export class UI {
     }
     
     openMemoryModal() {
+        // Show the memory modal (summon gesture).
         this.memoryModal.classList.remove('hidden');
         this.modalOpen = true;
     }
     
     closeModals() {
+        // Close any open modal.
         this.detailModal.classList.add('hidden');
         this.memoryModal.classList.add('hidden');
         this.modalOpen = false;
@@ -319,11 +434,11 @@ export class UI {
 
     drawLandmarks(landmarks) {
         this.ctx.save();
-        this.ctx.strokeStyle = '#00e5ff';
+        this.ctx.strokeStyle = '#d9c0ef';
         this.ctx.lineWidth = 3;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
-        // Simplified raw drawing for the PIP view
+        // Simplified landmark drawing for the camera PIP view.
         const connections = [[0,1,2,3,4],[0,5,6,7,8],[0,9,10,11,12],[0,13,14,15,16],[0,17,18,19,20],[0,5],[5,9],[9,13],[13,17],[0,17]];
         
         connections.forEach(string => {

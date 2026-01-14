@@ -1,23 +1,24 @@
 export class OneEuroFilter {
-    // Simple exponential smoothing for now. 
-    // "OneEuroFilter" is a standard name but let's stick to simple Lerp first as it's easier to tune.
-    // If user wants "Studio" quality, strict Lerp might lag.
-    // Let's implement a simple damped oscillator or just adjustable Lerp.
+    // Placeholder for future filtering; not used in this prototype.
 }
 
 export class LandmarkSmoother {
     constructor(alpha = 0.5) {
-        this.alpha = alpha; // 0 = no change, 1 = instant. Lower = smoother but more lag.
+        // 0 = no change, 1 = instant. Lower = smoother but more lag.
+        this.alpha = alpha;
         this.prevLandmarks = null;
     }
 
     smooth(landmarks) {
+        // If no landmarks are provided, nothing to smooth.
         if (!landmarks) return null;
         if (!this.prevLandmarks) {
+            // First frame: store and return raw landmarks.
             this.prevLandmarks = landmarks.map(p => ({...p}));
             return landmarks;
         }
 
+        // Exponential smoothing for each landmark point.
         const smoothed = landmarks.map((point, index) => {
             const prev = this.prevLandmarks[index];
             const x = this._lerp(prev.x, point.x, this.alpha);
@@ -26,11 +27,13 @@ export class LandmarkSmoother {
             return { x, y, z };
         });
 
+        // Save smoothed landmarks for the next frame.
         this.prevLandmarks = smoothed;
         return smoothed;
     }
 
     _lerp(start, end, amt) {
+        // Linear interpolation between previous and current values.
         return (1 - amt) * start + amt * end;
     }
 }

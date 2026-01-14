@@ -14,35 +14,46 @@
             <h1>Cosmo Hub</h1>
             <p>Use hand gestures to explore</p>
         </header>
+
+        <div id="control-dock">
+          <div class="mode-switch">
+            <span class="mode-label">Interaction Mode</span>
+            <div class="segmented" role="group" aria-label="Interaction Mode">
+              <button class="mode-btn active" data-mode="standard" type="button">Standard</button>
+              <button class="mode-btn" data-mode="camera" type="button">Camera</button>
+            </div>
+          </div>
+          <button id="gesture-guide-btn" type="button">Gesture Guide</button>
+        </div>
         
         <div id="galaxy-scroll-container">
             <div id="galaxy-list">
                 <!-- Galaxy Cards will be injected or hardcoded here -->
-                <div class="galaxy-card" data-id="nebula">
+                <div class="galaxy-card" data-id="nebula" role="button" tabindex="0" aria-label="Open Nebula Prime details">
                     <div class="card-content">
                         <h2>Nebula Prime</h2>
                         <p>A region of interstellar dust.</p>
                     </div>
                 </div>
-                <div class="galaxy-card" data-id="andromeda">
+                <div class="galaxy-card" data-id="andromeda" role="button" tabindex="0" aria-label="Open Andromeda details">
                      <div class="card-content">
                         <h2>Andromeda</h2>
                         <p>Our nearest major neighbor.</p>
                     </div>
                 </div>
-                <div class="galaxy-card" data-id="triangulum">
+                <div class="galaxy-card" data-id="triangulum" role="button" tabindex="0" aria-label="Open Triangulum details">
                      <div class="card-content">
                         <h2>Triangulum</h2>
                         <p>The third-largest member.</p>
                     </div>
                 </div>
-                <div class="galaxy-card" data-id="sombrero">
+                <div class="galaxy-card" data-id="sombrero" role="button" tabindex="0" aria-label="Open Sombrero details">
                      <div class="card-content">
                         <h2>Sombrero</h2>
                         <p>Unbarred spiral galaxy.</p>
                     </div>
                 </div>
-                 <div class="galaxy-card" data-id="whirlpool">
+                 <div class="galaxy-card" data-id="whirlpool" role="button" tabindex="0" aria-label="Open Whirlpool details">
                      <div class="card-content">
                         <h2>Whirlpool</h2>
                         <p>Interacting grand-design.</p>
@@ -80,6 +91,71 @@
                     </div>
                 </div>
             </div>
+      </div>
+
+      <!-- Gesture Guide Modal -->
+      <div id="guide-modal" class="hidden" aria-hidden="true">
+        <div class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+          <button id="guide-close" type="button" aria-label="Close gesture guide">×</button>
+          <div class="guide-hero">
+            <svg viewBox="0 0 220 140" aria-hidden="true">
+              <defs>
+                <linearGradient id="guideGlow" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#00e5ff" stop-opacity="0.9" />
+                  <stop offset="1" stop-color="#7d2ae8" stop-opacity="0.7" />
+                </linearGradient>
+              </defs>
+              <rect x="10" y="10" width="200" height="120" rx="18" fill="none" stroke="url(#guideGlow)" stroke-width="2" />
+              <circle cx="70" cy="70" r="22" fill="none" stroke="url(#guideGlow)" stroke-width="2" />
+              <circle cx="150" cy="70" r="22" fill="none" stroke="url(#guideGlow)" stroke-width="2" />
+              <path d="M92 70 L128 70" stroke="url(#guideGlow)" stroke-width="3" stroke-linecap="round" />
+              <path d="M70 48 L70 30" stroke="url(#guideGlow)" stroke-width="3" stroke-linecap="round" />
+              <path d="M150 48 L150 30" stroke="url(#guideGlow)" stroke-width="3" stroke-linecap="round" />
+            </svg>
+            <p class="guide-caption">Pinch to confirm. Slide to scroll.</p>
+          </div>
+          <h2 id="guide-title">Gesture Guide</h2>
+          <ul class="guide-list">
+            <li>
+              <div class="gesture-visual" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path d="M18 34c6-6 22-6 28 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M16 22h8M40 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M12 42c8 8 32 8 40 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="gesture-text"><span>Scroll</span>Move your hand left or right.</div>
+            </li>
+            <li>
+              <div class="gesture-visual" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <circle cx="24" cy="28" r="8" fill="none" stroke="currentColor" stroke-width="2" />
+                  <circle cx="40" cy="36" r="8" fill="none" stroke="currentColor" stroke-width="2" />
+                  <path d="M28 32L36 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="gesture-text"><span>Confirm</span>Pinch to select a highlighted card.</div>
+            </li>
+            <li>
+              <div class="gesture-visual" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path d="M20 44l12-20 12 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M32 16v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="gesture-text"><span>Dismiss</span>Push forward to close a modal.</div>
+            </li>
+            <li>
+              <div class="gesture-visual" aria-hidden="true">
+                <svg viewBox="0 0 64 64">
+                  <path d="M22 44V24M30 44V20M38 44V22M46 44V26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M18 44h32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="gesture-text"><span>Summon</span>Hold an open palm to reveal memory.</div>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Minimized Debug View (Picture-in-Picture) -->

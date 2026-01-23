@@ -1,6 +1,6 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { ArrowLeft, X, Shuffle, Map as MapIcon, ZoomOut } from 'lucide-react';
 import { MEMORIES, STATIC_ELEMENTS, WALKER_PATH } from '../constants';
 import { Memory } from '../types';
@@ -76,11 +76,14 @@ const Tower = ({ active }: { active: boolean }) => (
 );
 
 const Skyscraper = ({ active }: { active: boolean }) => (
-  <svg width="30" height="60" viewBox="0 0 30 60" className={`text-[#3d312b] overflow-visible transition-all duration-500 ${active ? 'scale-125 drop-shadow-lg' : 'opacity-90'}`}>
-    <rect x="5" y="10" width="20" height="50" fill="none" stroke="currentColor" strokeWidth="1.5" />
-    <line x1="15" y1="10" x2="15" y2="60" stroke="currentColor" strokeWidth="0.5" />
-    <line x1="5" y1="25" x2="25" y2="25" stroke="currentColor" strokeWidth="0.5" />
-    <line x1="5" y1="40" x2="25" y2="40" stroke="currentColor" strokeWidth="0.5" />
+  <svg width="30" height="80" viewBox="0 0 30 80" className={`text-[#3d312b] overflow-visible transition-all duration-500 ${active ? 'scale-125 drop-shadow-lg' : 'opacity-90'}`}>
+    <line x1="15" y1="0" x2="15" y2="15" stroke="currentColor" strokeWidth="1" />
+    <path d="M10,22 L15,15 L20,22 Z" fill="none" stroke="currentColor" strokeWidth="1.2" />
+    <rect x="7" y="22" width="16" height="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="5" y="32" width="20" height="48" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <line x1="10" y1="32" x2="10" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+    <line x1="15" y1="32" x2="15" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+    <line x1="20" y1="32" x2="20" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
   </svg>
 );
 
@@ -125,6 +128,71 @@ const Dragon = () => (
     </svg>
 );
 
+const WhaleTail = () => (
+    <svg width="50" height="50" viewBox="0 0 100 100" className="text-[#3d312b] opacity-85 overflow-visible">
+        <path 
+            d="M50,90 
+               C42,65 35,45 10,40 
+               C0,38 5,20 50,35 
+               C95,20 100,38 90,40 
+               C65,45 58,65 50,90 Z" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="3.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+        />
+        <path d="M50,35 L50,45" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.3" />
+        <path d="M20,95 Q50,88 80,95" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+        <path d="M35,102 Q50,98 65,102" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+    </svg>
+);
+
+const InkSmudge = ({ active }: { active: boolean }) => (
+    <AnimatePresence>
+        {active && (
+            <motion.div
+                initial={{ scale: 0.1, opacity: 0, rotate: -8 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={{ scale: 1.4, opacity: 0 }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-visible"
+            >
+                <div className="scale-[2.6] origin-center">
+                    <svg width="400" height="300" viewBox="0 0 400 300" className="text-[#3d312b] mix-blend-multiply">
+                        <defs>
+                            <filter id="inkSmudgeEffect" x="-50%" y="-50%" width="200%" height="200%">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" seed="5" result="noise" />
+                                <feDisplacementMap in="SourceGraphic" in2="noise" scale="55" xChannelSelector="R" yChannelSelector="G" result="textured" />
+                                <feGaussianBlur in="textured" stdDeviation="4" result="blurred" />
+                                <feComponentTransfer in="blurred">
+                                    <feFuncA type="linear" slope="0.8" />
+                                </feComponentTransfer>
+                            </filter>
+                        </defs>
+                        <g filter="url(#inkSmudgeEffect)">
+                            <ellipse cx="200" cy="150" rx="70" ry="30" fill="currentColor" opacity="0.5" />
+                            <path
+                                d="M140,150 Q170,120 200,150 T260,150"
+                                stroke="currentColor"
+                                strokeWidth="45"
+                                fill="none"
+                                strokeLinecap="round"
+                                opacity="0.3"
+                            />
+                            <circle cx="180" cy="140" r="45" fill="currentColor" opacity="0.4" />
+                            <circle cx="230" cy="165" r="35" fill="currentColor" opacity="0.3" />
+                            <circle cx="120" cy="160" r="8" fill="currentColor" opacity="0.2" />
+                            <circle cx="280" cy="140" r="12" fill="currentColor" opacity="0.2" />
+                            <circle cx="210" cy="110" r="6" fill="currentColor" opacity="0.2" />
+                        </g>
+                    </svg>
+                </div>
+            </motion.div>
+        )}
+    </AnimatePresence>
+);
+
 const TypographyLarge = ({ text }: { text: string }) => (
     <div className="absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-20 rotate-[-15deg] whitespace-nowrap">
         <h1 className="font-display text-3xl sm:text-4xl md:text-6xl text-[#5c4d44] tracking-[0.2em]">{text}</h1>
@@ -158,6 +226,7 @@ const StaticMap: Record<string, any> = {
   'island': Mountains,
   'opera': () => <svg width="40" height="20" viewBox="0 0 40 20" className="text-[#3d312b]"><path d="M0,20 Q10,0 20,20 Q30,5 40,20" fill="none" stroke="currentColor"/></svg>,
   'whale': () => <svg width="30" height="20" viewBox="0 0 30 20" className="text-[#3d312b] opacity-50"><path d="M0,10 Q15,0 30,15" fill="none" stroke="currentColor"/></svg>,
+  'whale_tail': WhaleTail,
   'text_large': ({ label }: any) => <TypographyLarge text={label} />,
   'text_medium': ({ label }: any) => <TypographyMedium text={label} />,
   'text_small': ({ label }: any) => <span className="font-tech text-[8px] sm:text-[10px] uppercase tracking-[0.3em] text-[#5c4d44] opacity-50">{label}</span>
@@ -289,6 +358,73 @@ const WorldMapBackground = () => (
     </div>
 );
 
+// --- WHISPER SUB-COMPONENT ---
+const MagicWhisper = () => {
+    const whisperText = "I solemnly swear that I am up to something meaningful.";
+    const words = whisperText.split(" ");
+    const [cycle, setCycle] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCycle(prev => prev + 1);
+        }, 8000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.45,
+                delayChildren: 0.8
+            }
+        },
+        exit: {
+            opacity: 0,
+            filter: "blur(8px)",
+            scale: 1.05,
+            transition: { duration: 1.5, ease: "easeInOut" }
+        }
+    };
+
+    const wordVariants: Variants = {
+        hidden: { opacity: 0, y: 8 },
+        visible: {
+            opacity: 0.4,
+            y: 0,
+            transition: { duration: 1.5 }
+        }
+    };
+
+    return (
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 translate-x-8 -translate-y-6 pointer-events-none z-10">
+            <AnimatePresence mode="wait">
+                {cycle % 2 === 0 && (
+                    <motion.div
+                        key={cycle}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="relative flex flex-wrap gap-x-4 gap-y-1 max-w-[85vw]"
+                    >
+                        {words.map((word, i) => (
+                            <motion.span
+                                key={i}
+                                variants={wordVariants}
+                                className="font-['Tangerine'] font-semibold text-lg sm:text-2xl md:text-4xl text-[#3d312b] italic leading-tight"
+                            >
+                                {word}
+                            </motion.span>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions }) => {
   const [activeMemory, setActiveMemory] = useState<Memory | null>(null);
   const [hoveredMemoryId, setHoveredMemoryId] = useState<string | null>(null);
@@ -366,6 +502,7 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
         onClick={closeMemory}
       >
           <WorldMapBackground />
+          <MagicWhisper />
           <FootstepsManager />
 
           {STATIC_ELEMENTS.map((el) => {
@@ -417,6 +554,7 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
                         setActiveMemory(mem);
                     }}
                   >
+                      <InkSmudge active={isActive} />
                       <div className={`absolute -top-10 md:-top-12 left-1/2 -translate-x-1/2 flex flex-col items-center transition-all duration-300 ${isActive || isHovered ? 'scale-110' : 'group-hover:scale-110'}`}>
                           <div className={`bg-[#e8dfcf] border px-1.5 py-0.5 shadow-sm transition-colors duration-300 ${isActive || isHovered ? 'border-[#8b0000]' : 'border-[#5c4d44]'}`}>
                               <span className={`font-display text-[8px] md:text-xs font-bold tracking-widest ${isActive || isHovered ? 'text-[#8b0000]' : 'text-[#5c4d44]'}`}>
@@ -426,9 +564,6 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
                           <div className={`w-0.5 h-3 md:h-4 transition-colors duration-300 ${isActive || isHovered ? 'bg-[#8b0000]' : 'bg-[#5c4d44]'}`}></div>
                       </div>
                       <BuildingComponent active={isActive} />
-                      {(isActive || isHovered) && (
-                        <div className={`absolute inset-[-30px] md:inset-[-40px] border rounded-full pointer-events-none ${isActive ? 'border-[#8b0000] opacity-30 animate-pulse' : 'border-[#8b0000] opacity-20'} `}></div>
-                      )}
                       {isHovered && !isActive && (
                         <div className="absolute inset-[-18px] md:inset-[-28px] border border-[#8b0000] rounded-full opacity-30 blur-[2px] pointer-events-none"></div>
                       )}

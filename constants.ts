@@ -70,7 +70,7 @@ export const STATIC_ELEMENTS = [
   // --- OCEAN LIFE (In the water gaps) ---
   { id: 's_kraken', type: 'kraken', x: 35, y: 55, label: 'The Deep' },
   { id: 's_whale_pac', type: 'whale', x: 10, y: 60, label: '' },
-  { id: 's_whale_ind', type: 'whale', x: 65, y: 80, label: '' },
+  { id: 's_whale_ind', type: 'whale_tail', x: 78, y: 82, label: '' },
   { id: 's_ship_1', type: 'ship', x: 32, y: 25, label: '' },
   { id: 's_ship_2', type: 'ship', x: 85, y: 55, label: 'Trade Route' },
 

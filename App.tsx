@@ -137,6 +137,7 @@ export default function App() {
           actions.scrollBy(1);
           break;
         case 'SUMMON':
+          actions.summon();
           actions.confirm(syncFocusFromCursor());
           break;
         case 'DISMISS':
@@ -234,131 +235,8 @@ export default function App() {
 
       <GestureGuild isOpen={guideOpen} onClose={() => setGuideOpen(false)} />
 
-      <div className="fixed bottom-8 right-5 z-[60] flex items-end gap-4">
-        <div className="pointer-events-auto -translate-y-10 -translate-x-6">
-          <motion.div
-            data-focus-type="guide"
-            onMouseEnter={() => actions.setFocus({ type: 'guide' })}
-            onMouseLeave={() => {
-              if (actions.focus?.type === 'guide') actions.setFocus(null);
-            }}
-            onClick={() => {
-              actions.setFocus({ type: 'guide' });
-              actions.confirm();
-              setGuideOpen(true);
-            }}
-            className="relative cursor-pointer flex flex-col items-center justify-center group h-32 w-32"
-            initial={false}
-          >
-            <motion.div
-              className="relative flex items-center justify-center"
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-            >
-              <svg width="60" height="60" viewBox="0 0 60 60" className="overflow-visible">
-                <circle
-                  cx="30" cy="30" r="28"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.1)"
-                  strokeWidth="0.5"
-                />
-
-                <motion.g
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-                  style={{ transformOrigin: "30px 30px" }}
-                >
-                  <motion.rect
-                    x="11" y="11" width="38" height="38"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.4)"
-                    strokeWidth="1"
-                    transform="translate(0 -4)"
-                    animate={{
-                      rotate: [0, -90, -180, -270, -360],
-                      opacity: [0.3, 0.6, 0.3]
-                    }}
-                    transition={{
-                      rotate: { duration: 25, repeat: Infinity, ease: "linear" },
-                      opacity: { duration: 5, repeat: Infinity, ease: "easeInOut" }
-                    }}
-                    className="group-hover:stroke-white transition-colors duration-700"
-                  />
-                </motion.g>
-
-                <motion.circle
-                  cx="30" cy="30" r="19"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.2)"
-                  strokeWidth="1"
-                  strokeDasharray="2 6"
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-                  className="group-hover:stroke-white group-hover:opacity-100 transition-all duration-700"
-                />
-
-                <g className="group-hover:opacity-100 opacity-20 transition-opacity duration-700">
-                  <circle cx="30" cy="2" r="1.5" fill="#fbbf24" className="shadow-[0_0_8px_#fbbf24]" />
-                  <circle cx="30" cy="58" r="1.5" fill="#22d3ee" className="shadow-[0_0_8px_#22d3ee]" />
-                </g>
-              </svg>
-            </motion.div>
-
-            <motion.div
-              className="absolute w-2 h-2 bg-white rotate-45 z-10"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.6, 1, 0.6]
-              }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            />
-
-            <motion.div
-              className="absolute w-12 h-[1px] bg-white/20 blur-[1px] pointer-events-none"
-              animate={{
-                top: ["20%", "80%", "20%"],
-                opacity: [0, 0.5, 0]
-              }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            />
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileHover={{ opacity: 1, y: 24 }}
-              className="absolute pointer-events-none transition-all duration-700"
-            >
-              <div className="flex flex-col items-center">
-                <div className="w-[1px] h-8 bg-gradient-to-b from-white to-transparent" />
-                <span className="font-tech text-[10px] uppercase tracking-[1em] text-white font-medium ml-[1em]">
-                  Codex
-                </span>
-              </div>
-            </motion.div>
-
-            <div className="absolute right-full pr-5 top-1/2 -translate-y-1/2 pointer-events-none opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
-              <span className="font-tech text-[10px] uppercase tracking-[0.6em] text-white/70">
-                Gesture Guild
-              </span>
-            </div>
-
-            <motion.div
-              className="absolute inset-0 border border-amber-300/70 rounded-full scale-[0.8]"
-              animate={{
-                opacity: [0.45, 0.8, 1, 0.8, 0.45],
-                boxShadow: [
-                  "0 0 0px rgba(251,191,36,0)",
-                  "0 0 14px rgba(251,191,36,0.35)",
-                  "0 0 22px rgba(251,191,36,0.55)",
-                  "0 0 14px rgba(251,191,36,0.35)",
-                  "0 0 0px rgba(251,191,36,0)"
-                ],
-              }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div>
-        </div>
-
-        <div className="flex flex-col items-center gap-2">
+      <div className="fixed bottom-8 left-5 z-[60] flex items-end gap-4">
+        <div className="flex flex-col items-center gap-2 translate-x-4">
           <GestureController
             enabled={gestureEnabled}
             onCursor={(position) => {
@@ -377,6 +255,129 @@ export default function App() {
             {gestureEnabled ? 'Gesture On' : 'Gesture Off'}
           </button>
         </div>
+      </div>
+
+      <div className="fixed bottom-12 right-12 z-[60] pointer-events-auto">
+        <motion.div
+          data-focus-type="guide"
+          onMouseEnter={() => actions.setFocus({ type: 'guide' })}
+          onMouseLeave={() => {
+            if (actions.focus?.type === 'guide') actions.setFocus(null);
+          }}
+          onClick={() => {
+            actions.setFocus({ type: 'guide' });
+            actions.confirm();
+            setGuideOpen(true);
+          }}
+          className="relative cursor-pointer flex flex-col items-center justify-center group h-32 w-32"
+          initial={false}
+        >
+          <motion.div
+            className="relative flex items-center justify-center"
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          >
+            <svg width="60" height="60" viewBox="0 0 60 60" className="overflow-visible">
+              <circle
+                cx="30" cy="30" r="28"
+                fill="none"
+                stroke="rgba(255,255,255,0.1)"
+                strokeWidth="0.5"
+              />
+
+              <motion.g
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                style={{ transformOrigin: "30px 30px" }}
+              >
+                <motion.rect
+                  x="11" y="11" width="38" height="38"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.4)"
+                  strokeWidth="1"
+                  transform="translate(0 -4)"
+                  animate={{
+                    rotate: [0, -90, -180, -270, -360],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{
+                    rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+                    opacity: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+                  }}
+                  className="group-hover:stroke-white transition-colors duration-700"
+                />
+              </motion.g>
+
+              <motion.circle
+                cx="30" cy="30" r="19"
+                fill="none"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1"
+                strokeDasharray="2 6"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                className="group-hover:stroke-white group-hover:opacity-100 transition-all duration-700"
+              />
+
+              <g className="group-hover:opacity-100 opacity-20 transition-opacity duration-700">
+                <circle cx="30" cy="2" r="1.5" fill="#fbbf24" className="shadow-[0_0_8px_#fbbf24]" />
+                <circle cx="30" cy="58" r="1.5" fill="#22d3ee" className="shadow-[0_0_8px_#22d3ee]" />
+              </g>
+            </svg>
+          </motion.div>
+
+          <motion.div
+            className="absolute w-2 h-2 bg-white rotate-45 z-10"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.6, 1, 0.6]
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          <motion.div
+            className="absolute w-12 h-[1px] bg-white/20 blur-[1px] pointer-events-none"
+            animate={{
+              top: ["20%", "80%", "20%"],
+              opacity: [0, 0.5, 0]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          />
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileHover={{ opacity: 1, y: 24 }}
+            className="absolute pointer-events-none transition-all duration-700"
+          >
+            <div className="flex flex-col items-center">
+              <div className="w-[1px] h-8 bg-gradient-to-b from-white to-transparent" />
+              <span className="font-tech text-[10px] uppercase tracking-[1em] text-white font-medium ml-[1em]">
+                Codex
+              </span>
+            </div>
+          </motion.div>
+
+          <div className="absolute right-full pr-5 top-1/2 -translate-y-1/2 pointer-events-none opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
+            <span className="font-tech text-[10px] uppercase tracking-[0.6em] text-white/70">
+              Gesture Guild
+            </span>
+          </div>
+
+          <motion.div
+            className="absolute inset-0 border border-amber-300/70 rounded-full scale-[0.8]"
+            animate={{
+              opacity: [0.45, 0.8, 1, 0.8, 0.45],
+              boxShadow: [
+                "0 0 0px rgba(251,191,36,0)",
+                "0 0 14px rgba(251,191,36,0.35)",
+                "0 0 22px rgba(251,191,36,0.55)",
+                "0 0 14px rgba(251,191,36,0.35)",
+                "0 0 0px rgba(251,191,36,0)"
+              ],
+            }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.div>
       </div>
     </div>
   );

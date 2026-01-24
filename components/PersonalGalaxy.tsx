@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { ArrowLeft, X, Shuffle, Map as MapIcon, ZoomOut } from 'lucide-react';
 import { MEMORIES, STATIC_ELEMENTS, WALKER_PATH } from '../constants';
@@ -398,7 +398,7 @@ const MagicWhisper = () => {
     };
 
     return (
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 translate-x-8 -translate-y-6 pointer-events-none z-10">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 translate-x-8 -translate-y-6 pointer-events-none z-10 rotate-[8deg]">
             <AnimatePresence mode="wait">
                 {cycle % 2 === 0 && (
                     <motion.div
@@ -425,10 +425,91 @@ const MagicWhisper = () => {
     );
 };
 
+const SummonWhisper = () => {
+    const whisperText = "Summon anywhere, to see what comes next.";
+    const words = whisperText.split(" ");
+    const [cycle, setCycle] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCycle(prev => prev + 1);
+        }, 8000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.45,
+                delayChildren: 0.8
+            }
+        },
+        exit: {
+            opacity: 0,
+            filter: "blur(8px)",
+            scale: 1.05,
+            transition: { duration: 1.5, ease: "easeInOut" }
+        }
+    };
+
+    const wordVariants: Variants = {
+        hidden: { opacity: 0, y: 8 },
+        visible: {
+            opacity: 0.4,
+            y: 0,
+            transition: { duration: 1.5 }
+        }
+    };
+
+    return (
+        <div className="absolute left-[18%] top-[16%] pointer-events-none z-10">
+            <AnimatePresence mode="wait">
+                {cycle % 2 === 0 && (
+                    <motion.div
+                        key={cycle}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="relative flex flex-wrap gap-x-4 gap-y-1 max-w-[70vw]"
+                    >
+                        {words.map((word, i) => (
+                            <motion.span
+                                key={i}
+                                variants={wordVariants}
+                                className="font-['Tangerine'] font-semibold text-lg sm:text-2xl md:text-4xl text-[#3d312b] italic leading-tight"
+                            >
+                                {word}
+                            </motion.span>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions }) => {
   const [activeMemory, setActiveMemory] = useState<Memory | null>(null);
   const [hoveredMemoryId, setHoveredMemoryId] = useState<string | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [summonIndex, setSummonIndex] = useState<number>(-1);
+  const confirmIdRef = useRef(actions.confirmId);
+  const allowConfirmRef = useRef(false);
+
+  useEffect(() => {
+      if (MEMORIES.length === 0) return;
+      const defaultMemory = MEMORIES.find((mem) => mem.id === 'm_cali') ?? MEMORIES[0];
+      const defaultIndex = MEMORIES.findIndex((mem) => mem.id === defaultMemory.id);
+      setSummonIndex(defaultIndex === -1 ? 0 : defaultIndex);
+      setActiveMemory(defaultMemory);
+      const gate = window.setTimeout(() => {
+          allowConfirmRef.current = true;
+      }, 0);
+      return () => window.clearTimeout(gate);
+  }, []);
   
   useEffect(() => {
     if (activeMemory) {
@@ -442,19 +523,25 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
   }, [activeMemory]);
 
   const handleSummon = useCallback(() => {
-      const currentIndex = activeMemory ? MEMORIES.findIndex(m => m.id === activeMemory.id) : -1;
-      const nextIndex = (currentIndex + 1) % MEMORIES.length;
-      setActiveMemory(MEMORIES[nextIndex]);
-  }, [activeMemory]);
+      setSummonIndex((prev) => {
+          const nextIndex = (prev + 1) % MEMORIES.length;
+          setActiveMemory(MEMORIES[nextIndex]);
+          return nextIndex;
+      });
+  }, []);
 
   const closeMemory = useCallback(() => setActiveMemory(null), []);
 
   useEffect(() => {
-      if (actions.confirmId === 0) return;
+      if (!allowConfirmRef.current) return;
+      if (actions.confirmId === confirmIdRef.current) return;
+      confirmIdRef.current = actions.confirmId;
       if (!actions.confirmFocus) return;
       if (actions.confirmFocus.type === 'place') {
           const nextMemory = MEMORIES.find((mem) => mem.id === actions.confirmFocus.id);
           if (nextMemory) {
+              const idx = MEMORIES.findIndex(m => m.id === nextMemory.id);
+              setSummonIndex(idx === -1 ? -1 : idx);
               setActiveMemory(nextMemory);
           }
       }
@@ -503,6 +590,7 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
       >
           <WorldMapBackground />
           <MagicWhisper />
+          <SummonWhisper />
           <FootstepsManager />
 
           {STATIC_ELEMENTS.map((el) => {
@@ -551,13 +639,15 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
                         e.stopPropagation();
                         actions.setFocus({ type: 'place', id: mem.id });
                         actions.confirm();
+                        const idx = MEMORIES.findIndex(m => m.id === mem.id);
+                        setSummonIndex(idx === -1 ? -1 : idx);
                         setActiveMemory(mem);
                     }}
                   >
                       <InkSmudge active={isActive} />
                       <div className={`absolute -top-10 md:-top-12 left-1/2 -translate-x-1/2 flex flex-col items-center transition-all duration-300 ${isActive || isHovered ? 'scale-110' : 'group-hover:scale-110'}`}>
                           <div className={`bg-[#e8dfcf] border px-1.5 py-0.5 shadow-sm transition-colors duration-300 ${isActive || isHovered ? 'border-[#8b0000]' : 'border-[#5c4d44]'}`}>
-                              <span className={`font-display text-[8px] md:text-xs font-bold tracking-widest ${isActive || isHovered ? 'text-[#8b0000]' : 'text-[#5c4d44]'}`}>
+                              <span className={`font-display text-[8px] md:text-xs font-bold tracking-widest whitespace-nowrap ${isActive || isHovered ? 'text-[#8b0000]' : 'text-[#5c4d44]'}`}>
                                   {mem.location}
                               </span>
                           </div>

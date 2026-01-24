@@ -21,7 +21,7 @@ export const MEMORIES: Memory[] = [
     date: '2018 - Present',
     emotion: 'Ambition',
     color: '#6c5ce7',
-    location: 'California',
+    location: 'United States',
     icon: 'bridge',
     coordinates: { x: 12, y: 32 } // West Coast
   },

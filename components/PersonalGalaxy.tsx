@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { ArrowLeft, X, Shuffle, Map as MapIcon, ZoomOut } from 'lucide-react';
-import { MEMORIES, STATIC_ELEMENTS, WALKER_PATH } from '../constants';
+import { FRAME_IMAGE, MEMORIES, STATIC_ELEMENTS, WALKER_PATH } from '../constants';
 import { Memory } from '../types';
 import { ActionLayer } from '../actions';
 
@@ -655,7 +655,7 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
                       </div>
                       <BuildingComponent active={isActive} />
                       {isHovered && !isActive && (
-                        <div className="absolute inset-[-18px] md:inset-[-28px] border border-[#8b0000] rounded-full opacity-30 blur-[2px] pointer-events-none"></div>
+                        <div className="absolute inset-[-24px] md:inset-[-36px] rounded-full border border-white/70 opacity-80 blur-[1px] shadow-[0_0_18px_rgba(255,255,255,0.5)] pointer-events-none"></div>
                       )}
                   </div>
               );
@@ -686,42 +686,38 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
         </button>
       </div>
 
-      <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-50 flex gap-2 sm:gap-4">
-        {activeMemory && (
-            <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                onClick={closeMemory}
-                className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#8b0000] text-[#e8dfcf] font-display text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-[#5c4d44] transition-all rounded-sm shadow-md"
-            >
-                <ZoomOut size={12} /> Close
-            </motion.button>
-        )}
-        <button 
-            onClick={handleSummon}
-            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 border-2 border-[#5c4d44] bg-[#e8dfcf] text-[#5c4d44] font-display text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-[#3d312b] hover:text-[#e8dfcf] transition-all shadow-[2px_2px_0px_#5c4d44] sm:shadow-[4px_4px_0px_#5c4d44] hover:shadow-[1px_1px_0px_#5c4d44] active:translate-y-[2px] active:shadow-none"
-        >
-            <Shuffle size={12} /> Jump
-        </button>
-      </div>
+      <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-50"></div>
 
       {/* 4. SIDEBAR DETAIL (Journal) */}
       <AnimatePresence>
         {activeMemory && (
             <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="absolute top-0 right-0 w-full sm:w-[450px] h-full bg-[#f2ebd9] shadow-[-20px_0_50px_rgba(61,49,43,0.2)] z-40 flex flex-col border-l-2 border-[#5c4d44]"
+                initial={{ x: '100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: '100%', opacity: 0 }}
+                transition={{ type: "spring", stiffness: 220, damping: 28 }}
+                className="absolute top-0 right-0 w-full sm:w-[560px] h-full z-[100] flex flex-col overflow-hidden"
             >
-                <div className="h-14 sm:h-16 bg-[#5c4d44] flex items-center justify-between px-6 text-[#e8dfcf]">
-                    <span className="font-display tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs uppercase">Journal Entry</span>
-                    <button onClick={closeMemory} className="hover:text-white transition-colors"><X size={20}/></button>
+                <div className="absolute inset-0 bg-white/5 backdrop-blur-[40px] border-l border-white/40 shadow-[-40px_0_80px_rgba(0,0,0,0.2)] z-0" />
+                <div className="absolute inset-0 border-t border-white/20 z-[1] pointer-events-none" />
+                <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_0%_0%,rgba(255,255,255,0.15)_0%,transparent_50%)] z-[1] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/noisy.png')] pointer-events-none z-[2]" />
+                <div className="relative z-20 h-20 sm:h-24 flex items-center justify-between px-8 bg-white/5 border-b border-white/10 backdrop-blur-md">
+                    <span className="font-display tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs uppercase text-[#5c4d44] font-bold">Journal Entry</span>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleSummon}
+                            className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 border border-white/20 text-[#5c4d44] font-tech text-[9px] uppercase tracking-[0.3em] hover:bg-white/20 transition-all shadow-sm"
+                        >
+                            <Shuffle size={12} className="text-[#8b0000]" /> Jump
+                        </button>
+                        <button onClick={closeMemory} className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/15 border border-white/10 transition-all text-[#5c4d44] group shadow-sm">
+                            <X size={18} className="group-hover:rotate-90 transition-transform duration-300" />
+                        </button>
+                    </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 sm:p-10 relative custom-scrollbar">
+                <div className="relative z-20 flex-1 overflow-y-auto p-8 sm:p-12 custom-scrollbar">
                     <div className="inline-block border border-[#8b0000] text-[#8b0000] px-2 py-0.5 sm:py-1 font-tech text-[8px] sm:text-[10px] uppercase tracking-widest mb-4 sm:mb-6">
                         {activeMemory.date}
                     </div>
@@ -741,8 +737,27 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
 
                     <div className="p-4 sm:p-6 bg-[#e8dfcf] border border-[#d6cbb5] rounded-sm">
                         <span className="block font-display text-[8px] sm:text-[10px] uppercase tracking-widest text-[#8c7b70] mb-2">Primary Emotion</span>
-                        <span className="font-hand text-xl sm:text-2xl text-[#8b0000]">{activeMemory.emotion}</span>
+                        <span className="font-hand text-2xl sm:text-3xl text-[#8b0000]">{activeMemory.emotion}</span>
                     </div>
+
+                    {activeMemory.mediaGif && (
+                        <div className="mt-6 sm:mt-8">
+                            <div className="relative scale-[1.05] origin-center aspect-[13/8] w-full">
+                                <img
+                                    src={FRAME_IMAGE}
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-10 translate-y-[3.5px]"
+                                />
+                                <div className="absolute inset-[18px]">
+                                    <img
+                                        src={activeMemory.mediaGif}
+                                        alt={activeMemory.mediaAlt ?? `${activeMemory.location} moving portrait`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </motion.div>
         )}

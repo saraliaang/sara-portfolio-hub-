@@ -14,6 +14,8 @@ export interface Memory {
   location: string;
   icon: 'pagoda' | 'skyscraper' | 'tower' | 'bridge' | 'mountain' | 'code';
   coordinates: { x: number; y: number }; // Percentages 0-100
+  mediaGif?: string;
+  mediaAlt?: string;
 }
 
 export interface Project {

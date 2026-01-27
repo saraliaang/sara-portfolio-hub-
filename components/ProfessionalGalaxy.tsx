@@ -1,7 +1,7 @@
 
 import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowUpRight, Globe, Database, Activity, Layers, ScanLine } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Globe, Database, Activity, Layers, ScanLine, X } from 'lucide-react';
 import { PROJECTS } from '../constants';
 import { ActionLayer } from '../actions';
 
@@ -14,6 +14,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [rotation, setRotation] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const startX = useRef(0);
   const currentRotation = useRef(0);
   
@@ -41,11 +42,22 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
       if (typeof nextIndex === 'number') {
         setRotation((prev) => getClosestRotation(prev, nextIndex * -theta));
       }
+      setDetailsOpen(true);
     }
     if (actions.confirmFocus.type === 'link') {
       window.open(actions.confirmFocus.url, '_blank', 'noopener,noreferrer');
     }
   }, [actions.confirmId, actions.confirmFocus, projectIndexById, theta]);
+
+  useEffect(() => {
+    if (actions.summonId === 0) return;
+    setDetailsOpen(true);
+  }, [actions.summonId]);
+
+  useEffect(() => {
+    if (actions.dismissId === 0) return;
+    setDetailsOpen(false);
+  }, [actions.dismissId]);
 
   useEffect(() => {
     if (actions.scrollSignal.id === 0) return;
@@ -127,10 +139,30 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
         </div>
       </div>
 
-      <div className="relative w-full h-[45%] md:h-[50%] flex items-center justify-center perspective-[1200px] overflow-visible z-20">
+      <div className="relative w-full h-full flex items-center justify-center perspective-[1200px] overflow-visible z-20 -translate-y-10">
+         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[820px] sm:w-[1080px] pointer-events-none z-0">
+            <img
+              src="/assets/pensive.png"
+              alt=""
+              className="w-full h-auto opacity-90"
+            />
+            <div className="absolute left-1/2 top-[33%] -translate-x-1/2 w-[60%] h-[26%] rounded-full bg-[radial-gradient(circle,rgba(34,211,238,0.55)_0%,rgba(34,211,238,0.22)_55%,transparent_72%)] blur-[6px]" />
+            <div className="absolute left-1/2 top-[31%] -translate-x-1/2 w-[54%] h-[18%] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.25)_0%,rgba(34,211,238,0.05)_60%,transparent_75%)] blur-[8px] mix-blend-screen" />
+            <div className="absolute left-1/2 top-[37%] -translate-x-1/2 w-[62%] h-[12%] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)] blur-[4px]" />
+            <motion.div
+              className="absolute left-[18%] top-[-6%] w-[26%] h-[22%] bg-[radial-gradient(circle,rgba(255,255,255,0.25)_0%,transparent_70%)] blur-[10px]"
+              animate={{ y: [-6, -18, -6], opacity: [0.2, 0.45, 0.2] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute right-[14%] top-[-2%] w-[30%] h-[24%] bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,transparent_70%)] blur-[12px]"
+              animate={{ y: [-4, -16, -4], opacity: [0.15, 0.4, 0.15] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
+         </div>
          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-96 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
          <div 
-            className="relative flex items-center justify-center cursor-grab active:cursor-grabbing z-10 top-6 sm:top-10"
+            className="relative flex items-center justify-center cursor-grab active:cursor-grabbing z-10 scale-[1.15]"
             onMouseDown={handleDragStart}
             onMouseMove={handleDragMove}
             onMouseUp={handleDragEnd}
@@ -145,7 +177,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                 style={{ 
                     transformStyle: "preserve-3d",
                     translateZ: -radius,
-                    rotateX: 5,
+                    rotateX: -9,
                 }}
                 animate={{ rotateY: rotation }}
                 transition={{ type: "spring", stiffness: 18, damping: 28 }}
@@ -167,7 +199,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                             }}
                         >
                             <motion.div 
-                                className={`w-full h-full transition-all duration-500 ${isActive ? 'scale-110 opacity-100' : 'scale-90 opacity-20 grayscale-[0.8] hover:opacity-40'}`}
+                                className={`w-full h-full transition-all duration-500 ${isActive ? 'scale-110 opacity-100' : 'scale-90 opacity-55 grayscale-[0.8] hover:opacity-70'}`}
                                 data-focus-type="project"
                                 data-focus-id={project.id}
                                 onMouseEnter={() => {
@@ -184,12 +216,13 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                                 onClick={() => {
                                   actions.setFocus({ type: 'project', id: project.id });
                                   actions.confirm();
+                                  setDetailsOpen(true);
                                 }}
                             >
                                 <div className={`relative w-full h-full backdrop-blur-md border rounded-sm overflow-hidden transition-all duration-500
                                     ${isActive 
                                         ? 'bg-cyan-500/10 border-cyan-300 shadow-[0_0_50px_rgba(34,211,238,0.25),inset_0_0_20px_rgba(34,211,238,0.1)]' 
-                                        : 'bg-slate-900/40 border-cyan-500/20'
+                                        : 'bg-slate-900/40 border-cyan-300/40 shadow-[0_0_25px_rgba(34,211,238,0.18)]'
                                     }
                                 `}>
                                     {isActive && (
@@ -219,91 +252,114 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
          </div>
       </div>
 
-      <div className="relative flex-1 w-full z-30 flex flex-col justify-center overflow-y-auto sm:overflow-hidden px-4 py-8">
-         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_10px_cyan]"></div>
-
-         <div className="max-w-5xl mx-auto w-full">
-            <AnimatePresence mode="wait">
-                <motion.div
+      <AnimatePresence>
+        {detailsOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-40 flex items-center justify-center"
+          >
+            <div className="absolute inset-0 bg-[#020617]/70 backdrop-blur-md"></div>
+            <motion.div
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 30, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 160, damping: 26 }}
+              className="w-[92%] max-w-5xl"
+            >
+              <div className="relative bg-[#0B1121]/80 border border-cyan-500/30 shadow-[0_0_50px_rgba(34,211,238,0.15)] backdrop-blur-xl px-6 sm:px-10 py-8 sm:py-10">
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_10px_cyan]"></div>
+                <button
+                  onClick={() => setDetailsOpen(false)}
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-100 text-[9px] sm:text-[10px] uppercase tracking-[0.4em] hover:bg-cyan-400/20 hover:border-cyan-300/60 transition-all pointer-events-auto z-10"
+                >
+                  <X size={12} /> Close
+                </button>
+                <AnimatePresence mode="wait">
+                  <motion.div
                     key={activeProject.id}
                     initial={{ opacity: 0, y: 10, filter: 'blur(8px)' }}
                     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, y: -10, filter: 'blur(8px)' }}
                     transition={{ duration: 0.3 }}
                     className="flex flex-col md:flex-row gap-8 sm:gap-16 items-start"
-                >
+                  >
                     <div className="w-full md:flex-1 md:max-w-md">
-                        <div className="flex flex-col mb-4 sm:mb-6">
-                            <span className="font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-[0.3em] sm:tracking-[0.5em] mb-2 font-bold">
-                                Transmuting logic into experience
-                            </span>
-                            <div className="relative inline-block">
-                                <h1 className="text-3xl sm:text-5xl md:text-7xl font-sans font-black text-white uppercase tracking-tight drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] leading-tight">
-                                    {activeProject.title}
-                                </h1>
-                                <div className="w-16 sm:w-24 h-px bg-cyan-400 mt-2 shadow-[0_0_10px_cyan]"></div>
-                            </div>
+                      <div className="flex flex-col mb-4 sm:mb-6">
+                        <span className="font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-[0.3em] sm:tracking-[0.5em] mb-2 font-bold">
+                          Transmuting logic into experience
+                        </span>
+                        <div className="relative inline-block">
+                          <h1 className="text-3xl sm:text-5xl md:text-7xl font-sans font-black text-white uppercase tracking-tight drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] leading-tight">
+                            {activeProject.title}
+                          </h1>
+                          <div className="w-16 sm:w-24 h-px bg-cyan-400 mt-2 shadow-[0_0_10px_cyan]"></div>
                         </div>
+                      </div>
 
-                        <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
-                            {activeProject.techStack.map(tech => (
-                                <span key={tech} className="px-2 py-0.5 sm:px-3 sm:py-1 bg-cyan-500/10 border border-cyan-500/40 text-cyan-200 text-[8px] sm:text-[10px] font-tech uppercase tracking-wider font-bold">
-                                    {tech}
-                                </span>
-                            ))}
-                        </div>
-                        
-                        <motion.a 
-                            href={activeProject.link}
-                            data-focus-type="link"
-                            data-focus-url={activeProject.link}
-                            onMouseEnter={() => actions.setFocus({ type: 'link', url: activeProject.link })}
-                            onMouseLeave={() => {
-                              if (actions.focus?.type === 'link' && actions.focus.url === activeProject.link) {
-                                actions.setFocus(null);
-                              }
-                            }}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              actions.setFocus({ type: 'link', url: activeProject.link });
-                              actions.confirm();
-                            }}
-                            whileHover={{ scale: 1.05 }}
-                            className="inline-flex items-center gap-2 sm:gap-3 px-6 py-2 sm:px-8 sm:py-3 bg-cyan-400 text-black font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-white transition-all rounded-sm shadow-[0_0_20px_rgba(34,211,238,0.3)]"
-                        >
-                            <Globe size={12} /> Initialize <ArrowUpRight size={12} />
-                        </motion.a>
+                      <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+                        {activeProject.techStack.map(tech => (
+                          <span key={tech} className="px-2 py-0.5 sm:px-3 sm:py-1 bg-cyan-500/10 border border-cyan-500/40 text-cyan-200 text-[8px] sm:text-[10px] font-tech uppercase tracking-wider font-bold">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      
+                      <motion.a 
+                        href={activeProject.link}
+                        data-focus-type="link"
+                        data-focus-url={activeProject.link}
+                        onMouseEnter={() => actions.setFocus({ type: 'link', url: activeProject.link })}
+                        onMouseLeave={() => {
+                          if (actions.focus?.type === 'link' && actions.focus.url === activeProject.link) {
+                            actions.setFocus(null);
+                          }
+                        }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          actions.setFocus({ type: 'link', url: activeProject.link });
+                          actions.confirm();
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        className="inline-flex items-center gap-2 sm:gap-3 px-6 py-2 sm:px-8 sm:py-3 bg-cyan-400 text-black font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-white transition-all rounded-sm shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+                      >
+                        <Globe size={12} /> Initialize <ArrowUpRight size={12} />
+                      </motion.a>
                     </div>
 
                     <div className="w-full md:flex-1 border-l border-cyan-500/30 pl-4 sm:pl-12 py-2 relative bg-gradient-to-r from-cyan-900/10 to-transparent">
-                        <div className="absolute top-0 left-[-1px] w-[2px] h-8 sm:h-12 bg-cyan-400 shadow-[0_0_10px_cyan]"></div>
-                        <div className="mb-6 sm:mb-8">
-                            <h4 className="flex items-center gap-2 font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-widest mb-3 font-bold">
-                                <ScanLine size={12} /> System Description
-                            </h4>
-                            <p className="font-sans text-cyan-50 text-base sm:text-xl leading-relaxed font-light">
-                                {activeProject.description}
-                            </p>
+                      <div className="absolute top-0 left-[-1px] w-[2px] h-8 sm:h-12 bg-cyan-400 shadow-[0_0_10px_cyan]"></div>
+                      <div className="mb-6 sm:mb-8">
+                        <h4 className="flex items-center gap-2 font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-widest mb-3 font-bold">
+                          <ScanLine size={12} /> System Description
+                        </h4>
+                        <p className="font-sans text-cyan-50 text-base sm:text-xl leading-relaxed font-light">
+                          {activeProject.description}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+                        <div>
+                          <h4 className="flex items-center gap-2 font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-widest mb-2 font-bold">
+                            <Activity size={12} /> Impact
+                          </h4>
+                          <p className="font-tech text-xs sm:text-sm text-cyan-100">{activeProject.impact}</p>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
-                            <div>
-                                <h4 className="flex items-center gap-2 font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-widest mb-2 font-bold">
-                                    <Activity size={12} /> Impact
-                                </h4>
-                                <p className="font-tech text-xs sm:text-sm text-cyan-100">{activeProject.impact}</p>
-                            </div>
-                            <div>
-                                <h4 className="flex items-center gap-2 font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-widest mb-2 font-bold">
-                                    <Database size={12} /> Type
-                                </h4>
-                                <p className="font-tech text-xs sm:text-sm text-cyan-100">Distributed Architecture</p>
-                            </div>
+                        <div>
+                          <h4 className="flex items-center gap-2 font-tech text-[8px] sm:text-[10px] text-cyan-400 uppercase tracking-widest mb-2 font-bold">
+                            <Database size={12} /> Type
+                          </h4>
+                          <p className="font-tech text-xs sm:text-sm text-cyan-100">Distributed Architecture</p>
                         </div>
+                      </div>
                     </div>
-                </motion.div>
-            </AnimatePresence>
-         </div>
-      </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

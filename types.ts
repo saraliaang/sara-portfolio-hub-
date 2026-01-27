@@ -22,9 +22,14 @@ export interface Project {
   id: string;
   title: string;
   role: string;
-  description: string;
+  thesis: string;
+  problemSpace: string;
+  designIntent: string;
+  technicalExecution: string;
+  futureHorizon: string;
   techStack: string[];
-  link: string;
+  githubLink?: string;
+  demoLink?: string;
   impact: string;
 }
 

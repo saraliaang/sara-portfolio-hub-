@@ -342,9 +342,9 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                     transition={{ duration: 0.35 }}
                     className="flex flex-col lg:flex-row gap-10 sm:gap-14 items-start"
                   >
-                    <div className="w-full lg:w-[35%] flex flex-col gap-10 sm:gap-12">
+                    <div className="w-full lg:w-[35%] flex flex-col gap-7 sm:gap-8">
                       <div className="flex flex-col gap-6">
-                        <span className="font-tech text-[9px] sm:text-[10px] text-cyan-300/80 uppercase tracking-[0.4em] font-semibold">
+                        <span className="font-tech text-[10px] sm:text-[11px] text-cyan-300/80 uppercase tracking-[0.4em] font-semibold">
                           {activeProject.thesis}
                         </span>
                         <div>
@@ -357,13 +357,13 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
 
                       <div className="flex flex-wrap gap-3 sm:gap-4">
                         {activeProject.techStack.map(tech => (
-                          <span key={tech} className="px-3 py-1 sm:px-4 sm:py-1.5 bg-cyan-500/10 border border-cyan-500/40 text-cyan-200 text-[10px] sm:text-xs font-tech uppercase tracking-wider font-bold">
+                          <span key={tech} className="px-3 py-1 sm:px-4 sm:py-1.5 bg-cyan-500/10 border border-cyan-500/40 text-cyan-200 text-[11px] sm:text-[13px] font-tech uppercase tracking-wider font-bold">
                             {tech}
                           </span>
                         ))}
                       </div>
 
-                      <div className="flex flex-col gap-4 sm:gap-5">
+                      <div className="flex flex-col gap-4 sm:gap-5 mt-2">
                         {activeProject.githubLink && (
                           <a
                             href={activeProject.githubLink}
@@ -379,7 +379,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                               e.preventDefault();
                               window.open(activeProject.githubLink, '_blank', 'noopener,noreferrer');
                             }}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-cyan-400 text-black font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-white transition-all rounded-sm shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+                            className="inline-flex items-center justify-center gap-2 px-7 py-3 bg-cyan-400 text-black font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-white transition-all rounded-sm shadow-[0_0_20px_rgba(34,211,238,0.3)]"
                           >
                             <Globe size={12} /> Github Code <ArrowUpRight size={12} />
                           </a>
@@ -399,7 +399,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                               e.preventDefault();
                               window.open(activeProject.demoLink, '_blank', 'noopener,noreferrer');
                             }}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-transparent border border-cyan-400/40 text-cyan-100 font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:border-cyan-200 hover:text-white transition-all rounded-sm"
+                            className="inline-flex items-center justify-center gap-2 px-7 py-3 bg-transparent border border-cyan-400/40 text-cyan-100 font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:border-cyan-200 hover:text-white transition-all rounded-sm"
                           >
                             Live Demo <ArrowUpRight size={12} />
                           </a>
@@ -410,7 +410,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                     <div className="w-full lg:w-[65%] border-l border-cyan-400/60 pl-6 sm:pl-12 py-2 relative bg-gradient-to-r from-cyan-900/10 to-transparent shadow-[-12px_0_24px_rgba(34,211,238,0.12)]">
                       <div className="absolute top-0 left-[-2px] w-[3px] h-10 sm:h-14 bg-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.8)]"></div>
                       <div className="mb-8 sm:mb-10">
-                        <h4 className="flex items-center gap-2 font-tech text-[9px] sm:text-[10px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold">
+                        <h4 className="flex items-center gap-2 font-tech text-[10px] sm:text-[11px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold">
                           <CircleDot size={12} /> Problem Space
                         </h4>
                         <p className="font-sans text-cyan-50 text-base sm:text-lg leading-relaxed font-light italic">
@@ -421,7 +421,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                       <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-6 sm:gap-8">
                         <div className="flex flex-col gap-6 border border-cyan-300/40 bg-cyan-950/30 p-5 sm:p-6 shadow-[0_0_22px_rgba(34,211,238,0.15)]">
                           <div>
-                            <h4 className="flex items-center gap-2 font-tech text-[9px] sm:text-[10px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold">
+                            <h4 className="flex items-center gap-2 font-tech text-[10px] sm:text-[11px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold">
                               <Sparkles size={12} /> Design Intent
                             </h4>
                             <p className="text-cyan-50 text-sm sm:text-base leading-relaxed">
@@ -429,7 +429,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                             </p>
                           </div>
                           <div className="border-t border-cyan-500/20 pt-5">
-                            <h4 className="flex items-center gap-2 font-tech text-[9px] sm:text-[10px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold">
+                            <h4 className="flex items-center gap-2 font-tech text-[10px] sm:text-[11px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold">
                               <Telescope size={12} /> Future Horizon
                             </h4>
                             <p className="text-cyan-50 text-sm sm:text-base leading-relaxed">
@@ -438,7 +438,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                           </div>
                         </div>
                         <div className="border border-cyan-300/40 bg-cyan-950/30 p-5 sm:p-6 shadow-[0_0_22px_rgba(34,211,238,0.15)]">
-                          <h4 className="flex items-center gap-2 font-tech text-[9px] sm:text-[10px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold whitespace-nowrap">
+                          <h4 className="flex items-center gap-2 font-tech text-[10px] sm:text-[11px] text-cyan-300 uppercase tracking-[0.3em] mb-3 font-bold whitespace-nowrap">
                             <Code2 size={12} /> Technical Execution
                           </h4>
                           <ul className="space-y-3 text-cyan-50 text-sm sm:text-base leading-relaxed">

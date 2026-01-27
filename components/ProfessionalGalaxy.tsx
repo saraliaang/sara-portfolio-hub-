@@ -83,7 +83,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
   useEffect(() => {
     if (actions.scrollSignal.id === 0) return;
     if (!actions.scrollSignal.delta) return;
-    setRotation((prev) => prev - actions.scrollSignal.delta * 15);
+    setRotation((prev) => prev - actions.scrollSignal.delta * 6);
   }, [actions.scrollSignal]);
 
   useEffect(() => {

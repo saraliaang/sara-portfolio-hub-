@@ -60,7 +60,7 @@ export const MEMORIES: Memory[] = [
     date: '2025 - now',
     emotion: 'Growth',
     color: '#0984e3',
-    location: 'Perth',
+    location: 'Australia',
     icon: 'skyscraper',
     coordinates: { x: 88, y: 80 }, // Australia
     mediaGif: '/assets/media/perth.gif',
@@ -111,6 +111,20 @@ export const STATIC_ELEMENTS = [
 
 export const PROJECTS: Project[] = [
   {
+    id: 'p3',
+    title: "Sara's Hub",
+    role: 'Creative Developer · Product Designer',
+    thesis: 'A cinematic portfolio that feels like a living world.',
+    problemSpace: 'Most portfolios read like documents. They list skills, but they rarely feel like you. I wanted a format that communicates craft, atmosphere, and intent in the first five seconds.',
+    designIntent: 'Shape the site as two parallel worlds (Voyager and Alchemist) so exploration replaces scrolling, with a Harry Potter–inspired magical atmosphere. Interactions should feel spell-like: hover awakens, summon confirms, and every action leaves a trace.',
+    technicalExecution: 'Gesture-ready input layer with fallback cursor control.\nWand-inspired cursor and interactive particle fields to animate each world.\nVoyager map is inspired by The Marauder’s Map with location icons, whisper-like text, ink spill selection, and wandering footprints.\nAlchemist uses a pensive backdrop with floating project cards for spell-like navigation.',
+    futureHorizon: 'Keep expanding the experience with new worlds, richer interactions, and updated gesture-driven journeys.',
+    techStack: ['MediaPipe', 'TypeScript', 'React', 'Framer Motion', 'Tailwind'],
+    githubLink: 'https://github.com/saraliaang/sara-porfolio-hub-',
+    demoLink: 'https://saralianghub.netlify.app/',
+    impact: 'Turned a prototype into a shippable, immersive experience.'
+  },
+  {
     id: 'p1',
     title: 'Teampulse',
     role: 'Product designer · Frontend developer · UX strategist',
@@ -120,8 +134,8 @@ export const PROJECTS: Project[] = [
     technicalExecution: 'Emoji-based weekly check-ins to reduce emotional friction.\nPrivate self-reflection history for personal awareness.\nManager dashboards showing trends, not individuals.\nLight-touch gamification through streak points and a Mental Garden, where consistent check-ins nurture growth — encouraging habit formation without pressure.',
     futureHorizon: 'Turning trend insights into gentle, real-world actions — such as a coffee token or a pause prompt — supporting care and de-escalation beyond the screen.',
     techStack: ['React', 'Django REST', 'PostgreSQL', 'Data visualisation'],
-    githubLink: '#',
-    demoLink: '#',
+    githubLink: 'https://github.com/SheCodesAus/full-stack-frogs_frontend/tree/main/teampulse-frontend',
+    demoLink: 'https://teampulse-app.netlify.app/',
     impact: 'Reduced incident response time by 40%.'
   },
   {
@@ -135,21 +149,8 @@ export const PROJECTS: Project[] = [
     futureHorizon: 'My next step is to implement "Time Travel Milestones," where hitting specific funding thresholds triggers unique UI animations, further gamifying the experience.',
     techStack: ['Node.js', 'TypeScript', 'Solidity', 'Redis'],
     githubLink: 'https://github.com/saraliaang/crowdfunding_backend',
+    demoLink:'https://pastport-fundraising.netlify.app/',
     impact: 'Processed $5M in volume securely in first quarter.'
-  },
-  {
-    id: 'p3',
-    title: "Sara's Hub",
-    role: 'Creative Developer · Product Designer',
-    thesis: 'A cinematic portfolio that feels like a living world.',
-    problemSpace: 'Most portfolios read like documents. They list skills, but they rarely feel like you. I wanted a format that communicates craft, atmosphere, and intent in the first five seconds.',
-    designIntent: 'Shape the site as two parallel worlds (Voyager and Alchemist) so exploration replaces scrolling, with a Harry Potter–inspired magical atmosphere. Interactions should feel spell-like: hover awakens, summon confirms, and every action leaves a trace.',
-    technicalExecution: 'Gesture-ready input layer with fallback cursor control.\nWorld map built as an animated, multi-layer scene with location-triggered storytelling.\nCustom UI system with glass depth, neon accents, and spatial focus states.\nProject cards and overlays designed for both mouse and gesture navigation.',
-    futureHorizon: 'Connect live gesture input, expand the map into new chapters, and ship interactive case studies with embedded demos.',
-    techStack: ['React', 'Framer Motion', 'Tailwind', 'MediaPipe'],
-    githubLink: '#',
-    demoLink: '#',
-    impact: 'Turned a prototype into a shippable, immersive experience.'
   },
   {
     id: 'p4',
@@ -160,23 +161,21 @@ export const PROJECTS: Project[] = [
     designIntent: 'Gesture Lab was created as a foundational prototype for future gesture-controlled applications. Through iterative testing, the gesture set was intentionally refined to prioritize gestures that are easy to learn, resilient to noise, and unlikely to be misinterpreted. The goal was to establish a reliable interaction language that can scale into real-world, camera-driven experiences.',
     technicalExecution: 'Real-time camera input with hand tracking.\nCore gesture vocabulary (wake, confirm, scroll, summon, dismiss).\nVisual cursor mapped to hand movement with adjustable sensitivity.\nGesture guide overlay to support learnability.\nMouse fallback for hybrid interaction.',
     futureHorizon: 'Evolving Gesture Lab into a reusable interaction framework that powers gesture-controlled navigation, storytelling, and portfolio experiences.',
-    techStack: ['JavaScript', 'HTML', 'CSS', 'MediaPipe'],
-    githubLink: '#',
-    demoLink: '#',
+    techStack: ['MediaPipe', 'JavaScript', 'HTML', 'CSS'],
+    githubLink: 'https://github.com/saraliaang/gesture-app',
     impact: 'Established a reliable gesture vocabulary for future camera-driven experiences.'
   },
   {
     id: 'p5',
-    title: 'Chrono Keep',
-    role: 'Mobile Lead',
-    thesis: 'Time aligns when energy leads.',
-    problemSpace: 'Schedules ignored human energy cycles, causing burnout.',
-    designIntent: 'Blend ritual, rhythm, and AI into a gentle planner.',
-    technicalExecution: 'On-device models with privacy-first personalization.',
-    futureHorizon: 'Context-aware nudges and team energy alignment.',
-    techStack: ['React Native', 'TensorFlow.js', 'Firebase'],
-    githubLink: '#',
-    demoLink: '#',
+    title: 'Saving Cedric',
+    role: 'Auror',
+    thesis: 'A single life saved can shift the entire timeline.',
+    problemSpace: 'Cedric is worth saving because of who he is courageous, smart, and full of integrity. The challenge is to change his fate of being killed by Voldermort in triwizard tornament.',
+    designIntent: 'Intercept the Portkey route, replace the Cup trigger with a safe diversion, and extract Cedric before the graveyard trap activates — all without revealing the intervention.',
+    technicalExecution: 'Create a decoy Portkey to redirect Cedric away from the trap.\nDeploy protective wards at the Cup site to delay interception.\nCoordinate a rapid extraction and concealment protocol with a time-bound escape window.',
+    futureHorizon: 'Extend the intervention framework to protect other witches and wizards lost to Voldemort’s rise.',
+    techStack: ['Expecto Patronum', 'protego maxima', 'Episkey'],
+
     impact: '100k+ MAU within 6 months.'
   }
 ];

@@ -4,6 +4,19 @@ Sara’s Hub is a cinematic portfolio that feels like a living world. Instead of
 
 The project is designed for both mouse and gesture input. It layers a gesture-ready interaction system over a richly animated interface: a world map narrative for personal memories, a project galaxy for case studies, and glass/neo-cyan UI systems that keep the experience cohesive while remaining exploratory. The goal is not just to present work, but to create a place that invites discovery.
 
+## Experience & UI Design Notes
+- **Custom cursor**: Wand-inspired cursor with a magical trail to make interaction feel spell-cast.
+- **Particle worlds**: Distinct particle fields per world; users can interact with particles to heighten engagement.
+- **Gesture UX**: Camera view includes a physical toggle for gesture control; the Gesture Guild is always accessible as a rules reminder.
+- **Voyager world**:
+  - Marauder’s Map inspiration to visualize memory locations.
+  - Location icons represent signature architecture from each place.
+  - Whisper-like text animations, ink spill on selection, and wandering footprints to simulate magical motion.
+  - Magical imagery inspired by Harry Potter.
+- **Alchemist world**:
+  - Pensive background as the atmospheric base layer.
+  - Floating project cards; gesture selection reinforces the magical interaction language.
+
 ## Technical Requirements
 
 ### Runtime
@@ -24,12 +37,6 @@ The project is designed for both mouse and gesture input. It layers a gesture-re
 - **Gesture Guild**: Overlay help UI with animated iconography and descriptions.
 - **Universe/World Routing**: Animations between views, hover focus boundaries, and selection via confirm.
 
-### Files of Interest
-- `App.tsx`: App shell, view routing, gesture controller mount, guide trigger.
-- `components/GestureController.tsx`: Camera UI, gesture handling, cursor mapping.
-- `gesture/gesture-logic.ts`: Gesture detection and thresholds.
-- `components/UniverseView.tsx`: Landing interactions and hover focus.
-
 ## File Structure
 ```
 sara-porfolio-hub-/
@@ -49,6 +56,12 @@ sara-porfolio-hub-/
 ├─ App.tsx
 └─ README.md
 ```
+
+### Files of Interest
+- `App.tsx`: App shell, view routing, gesture controller mount, guide trigger.
+- `components/GestureController.tsx`: Camera UI, gesture handling, cursor mapping.
+- `gesture/gesture-logic.ts`: Gesture detection and thresholds.
+- `components/UniverseView.tsx`: Landing interactions and hover focus.
 
 ### Development
 ```bash

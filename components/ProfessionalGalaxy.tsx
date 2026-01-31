@@ -8,6 +8,7 @@ import {
   Clock,
   Code2,
   Compass,
+  Wand2,
   Globe,
   Hand,
   ShieldCheck,
@@ -28,7 +29,7 @@ const PROJECT_ICON_MAP: Record<string, React.ElementType> = {
   p2: Clock,
   p3: Sparkles,
   p4: Hand,
-  p5: Compass,
+  p5: Wand2,
 };
 
 export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, actions }) => {
@@ -164,10 +165,10 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
         </div>
       </div>
 
-      <div className="relative w-full h-full flex items-center justify-center perspective-[1200px] overflow-visible z-20">
-         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[820px] sm:w-[1080px] pointer-events-none z-0">
+      <div className="relative w-full h-full flex items-center justify-center perspective-[1200px] overflow-visible z-20 -translate-y-24">
+         <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-[820px] sm:w-[1080px] pointer-events-none z-0">
             <img
-              src="/assets/pensive.png"
+              src="/assets/media/pensive.png"
               alt=""
               className="w-full h-auto opacity-90"
             />

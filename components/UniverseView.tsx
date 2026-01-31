@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ViewState } from '../types';
 import { LandingBackground } from './LandingBackground';
-import { Compass } from 'lucide-react';
+import { Compass, Github, Linkedin, Mail } from 'lucide-react';
 import { ActionLayer } from '../actions';
 
 interface UniverseViewProps {
@@ -291,6 +291,40 @@ export const UniverseView: React.FC<UniverseViewProps> = ({
                 </div>
             </div>
          </motion.div>
+      </div>
+
+      {/* 4. CONTACT STRIP */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30">
+        <div className="flex items-center gap-4">
+          <a
+            href="https://github.com/saraliaang"
+            target="_blank"
+            rel="noreferrer"
+            className="group relative flex h-12 w-12 items-center justify-center rounded-full border border-cyan-300/20 bg-cyan-500/5 transition-all hover:border-cyan-200/60 hover:bg-cyan-400/15"
+            aria-label="GitHub"
+          >
+            <Github className="h-6 w-6 text-cyan-100/80 group-hover:text-white transition-colors" />
+            <span className="absolute inset-0 rounded-full shadow-[0_0_18px_rgba(34,211,238,0.35)] opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+          <a
+            href="https://au.linkedin.com/in/sara-liang-au"
+            target="_blank"
+            rel="noreferrer"
+            className="group relative flex h-12 w-12 items-center justify-center rounded-full border border-cyan-300/20 bg-cyan-500/5 transition-all hover:border-cyan-200/60 hover:bg-cyan-400/15"
+            aria-label="LinkedIn"
+          >
+            <Linkedin className="h-6 w-6 text-cyan-100/80 group-hover:text-white transition-colors" />
+            <span className="absolute inset-0 rounded-full shadow-[0_0_18px_rgba(34,211,238,0.35)] opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+          <a
+            href="mailto:leungyunyee@gmail.com"
+            className="group relative flex h-12 w-12 items-center justify-center rounded-full border border-amber-200/20 bg-amber-500/5 transition-all hover:border-amber-200/60 hover:bg-amber-400/15"
+            aria-label="Email"
+          >
+            <Mail className="h-6 w-6 text-amber-100/80 group-hover:text-amber-50 transition-colors" />
+            <span className="absolute inset-0 rounded-full shadow-[0_0_18px_rgba(251,191,36,0.35)] opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+        </div>
       </div>
     </div>
   );

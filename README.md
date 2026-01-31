@@ -1,6 +1,8 @@
 # Sara Portfolio Hub (Deployed)
 
-This repository mirrors the current `Sara-s-hub-` build 1:1 so the deployed app can be updated without redeployment friction.
+Sara’s Hub is a cinematic portfolio that feels like a living world. Instead of scrolling through a static document, visitors move through two parallel realms—Voyager (personal journey) and Alchemist (professional work)—where interactions behave like spells: hover awakens, summon confirms, and every action leaves a trace. The experience is intentionally atmospheric and Harry Potter–inspired, blending story, motion, and UI ritual to convey craft, personality, and intent within seconds.
+
+The project is designed for both mouse and gesture input. It layers a gesture-ready interaction system over a richly animated interface: a world map narrative for personal memories, a project galaxy for case studies, and glass/neo-cyan UI systems that keep the experience cohesive while remaining exploratory. The goal is not just to present work, but to create a place that invites discovery.
 
 ## Technical Requirements
 
@@ -28,6 +30,26 @@ This repository mirrors the current `Sara-s-hub-` build 1:1 so the deployed app 
 - `gesture/gesture-logic.ts`: Gesture detection and thresholds.
 - `components/UniverseView.tsx`: Landing interactions and hover focus.
 
+## File Structure
+```
+sara-porfolio-hub-/
+├─ components/
+│  ├─ GestureController.tsx
+│  ├─ UniverseView.tsx
+│  ├─ PersonalGalaxy.tsx
+│  └─ ProfessionalGalaxy.tsx
+├─ gesture/
+│  ├─ gesture-logic.ts
+│  └─ smoothing.ts
+├─ assets/
+│  └─ media/
+├─ actions.ts
+├─ constants.ts
+├─ types.ts
+├─ App.tsx
+└─ README.md
+```
+
 ### Development
 ```bash
 npm install
@@ -39,6 +61,5 @@ npm run dev
 npm run build
 ```
 
-## Notes
-- This repo is a direct mirror of `Sara-s-hub-` by request.
-- Keep UI changes minimal unless explicitly requested; visual consistency is critical.
+## Author
+Sara Liang — leungyunyee@gmail.com — https://au.linkedin.com/in/sara-liang-au

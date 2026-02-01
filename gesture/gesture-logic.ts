@@ -62,7 +62,7 @@ export class GestureRecognizer {
       pinchReleaseThreshold: 0.15,
       pinchHoldTime: 400,
       scrollThresholdX: 0.33,
-      scaleThreshold: 0.08,
+      scaleThreshold: 0.07,
       scaleTimeWindow: 900,
       cooldown: 800,
     };

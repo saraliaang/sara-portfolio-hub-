@@ -14,15 +14,22 @@ export interface Memory {
   location: string;
   icon: 'pagoda' | 'skyscraper' | 'tower' | 'bridge' | 'mountain' | 'code';
   coordinates: { x: number; y: number }; // Percentages 0-100
+  mediaGif?: string;
+  mediaAlt?: string;
 }
 
 export interface Project {
   id: string;
   title: string;
   role: string;
-  description: string;
+  thesis: string;
+  problemSpace: string;
+  designIntent: string;
+  technicalExecution: string;
+  futureHorizon: string;
   techStack: string[];
-  link: string;
+  githubLink?: string;
+  demoLink?: string;
   impact: string;
 }
 

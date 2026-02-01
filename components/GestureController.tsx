@@ -53,10 +53,17 @@ export const GestureController: React.FC<GestureControllerProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#22d3ee';
-    ctx.lineWidth = 2;
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#f8fafc');
+    gradient.addColorStop(0.35, '#e2e8f0');
+    gradient.addColorStop(0.7, '#94a3b8');
+    gradient.addColorStop(1, '#64748b');
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 2.4;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
+    ctx.shadowColor = 'rgba(226,232,240,0.5)';
+    ctx.shadowBlur = 8;
     const connections = [
       [0, 1, 2, 3, 4],
       [0, 5, 6, 7, 8],
@@ -77,6 +84,35 @@ export const GestureController: React.FC<GestureControllerProps> = ({
         ctx.moveTo(start.x * canvas.width, start.y * canvas.height);
         ctx.lineTo(end.x * canvas.width, end.y * canvas.height);
       }
+      ctx.stroke();
+    });
+
+    ctx.save();
+    ctx.globalAlpha = 0.35;
+    ctx.lineWidth = 1;
+    ctx.shadowBlur = 2;
+    connections.forEach((path) => {
+      ctx.beginPath();
+      for (let i = 0; i < path.length - 1; i++) {
+        const start = landmarks[path[i]];
+        const end = landmarks[path[i + 1]];
+        ctx.moveTo(start.x * canvas.width, start.y * canvas.height);
+        ctx.lineTo(end.x * canvas.width, end.y * canvas.height);
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    const knuckles = [5, 6, 9, 10, 13, 14, 17, 18];
+    ctx.fillStyle = gradient;
+    ctx.shadowBlur = 10;
+    knuckles.forEach((index) => {
+      const point = landmarks[index];
+      const x = point.x * canvas.width;
+      const y = point.y * canvas.height;
+      ctx.beginPath();
+      ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+      ctx.fill();
       ctx.stroke();
     });
   };
@@ -120,9 +156,9 @@ export const GestureController: React.FC<GestureControllerProps> = ({
         if (gestureResult) {
           const handedness = (results as any)?.handedness?.[0]?.[0]?.categoryName;
           const handOffset = handedness === 'Right' ? 0.04 : handedness === 'Left' ? -0.04 : 0;
-          const gain = 1.12;
+          const gain = 1.12; 
           const cx = (1 - gestureResult.cursor.x + handOffset) - 0.5;
-          const cy = gestureResult.cursor.y - 0.5;
+          const cy = gestureResult.cursor.y - 0.2;
           const cursor = {
             x: (cx * gain + 0.5) * window.innerWidth,
             y: (cy * gain + 0.5) * window.innerHeight,

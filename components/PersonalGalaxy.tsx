@@ -1,8 +1,8 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { ArrowLeft, X, Shuffle, Map as MapIcon, ZoomOut } from 'lucide-react';
-import { MEMORIES, STATIC_ELEMENTS, WALKER_PATH } from '../constants';
+import { FRAME_IMAGE, MEMORIES, STATIC_ELEMENTS, WALKER_PATH } from '../constants';
 import { Memory } from '../types';
 import { ActionLayer } from '../actions';
 
@@ -76,11 +76,14 @@ const Tower = ({ active }: { active: boolean }) => (
 );
 
 const Skyscraper = ({ active }: { active: boolean }) => (
-  <svg width="30" height="60" viewBox="0 0 30 60" className={`text-[#3d312b] overflow-visible transition-all duration-500 ${active ? 'scale-125 drop-shadow-lg' : 'opacity-90'}`}>
-    <rect x="5" y="10" width="20" height="50" fill="none" stroke="currentColor" strokeWidth="1.5" />
-    <line x1="15" y1="10" x2="15" y2="60" stroke="currentColor" strokeWidth="0.5" />
-    <line x1="5" y1="25" x2="25" y2="25" stroke="currentColor" strokeWidth="0.5" />
-    <line x1="5" y1="40" x2="25" y2="40" stroke="currentColor" strokeWidth="0.5" />
+  <svg width="30" height="80" viewBox="0 0 30 80" className={`text-[#3d312b] overflow-visible transition-all duration-500 ${active ? 'scale-125 drop-shadow-lg' : 'opacity-90'}`}>
+    <line x1="15" y1="0" x2="15" y2="15" stroke="currentColor" strokeWidth="1" />
+    <path d="M10,22 L15,15 L20,22 Z" fill="none" stroke="currentColor" strokeWidth="1.2" />
+    <rect x="7" y="22" width="16" height="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="5" y="32" width="20" height="48" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <line x1="10" y1="32" x2="10" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+    <line x1="15" y1="32" x2="15" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+    <line x1="20" y1="32" x2="20" y2="80" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
   </svg>
 );
 
@@ -125,6 +128,71 @@ const Dragon = () => (
     </svg>
 );
 
+const WhaleTail = () => (
+    <svg width="50" height="50" viewBox="0 0 100 100" className="text-[#3d312b] opacity-85 overflow-visible">
+        <path 
+            d="M50,90 
+               C42,65 35,45 10,40 
+               C0,38 5,20 50,35 
+               C95,20 100,38 90,40 
+               C65,45 58,65 50,90 Z" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="3.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+        />
+        <path d="M50,35 L50,45" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.3" />
+        <path d="M20,95 Q50,88 80,95" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+        <path d="M35,102 Q50,98 65,102" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+    </svg>
+);
+
+const InkSmudge = ({ active }: { active: boolean }) => (
+    <AnimatePresence>
+        {active && (
+            <motion.div
+                initial={{ scale: 0.1, opacity: 0, rotate: -8 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={{ scale: 1.4, opacity: 0 }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-visible"
+            >
+                <div className="scale-[2.6] origin-center">
+                    <svg width="400" height="300" viewBox="0 0 400 300" className="text-[#3d312b] mix-blend-multiply">
+                        <defs>
+                            <filter id="inkSmudgeEffect" x="-50%" y="-50%" width="200%" height="200%">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" seed="5" result="noise" />
+                                <feDisplacementMap in="SourceGraphic" in2="noise" scale="55" xChannelSelector="R" yChannelSelector="G" result="textured" />
+                                <feGaussianBlur in="textured" stdDeviation="4" result="blurred" />
+                                <feComponentTransfer in="blurred">
+                                    <feFuncA type="linear" slope="0.8" />
+                                </feComponentTransfer>
+                            </filter>
+                        </defs>
+                        <g filter="url(#inkSmudgeEffect)">
+                            <ellipse cx="200" cy="150" rx="70" ry="30" fill="currentColor" opacity="0.5" />
+                            <path
+                                d="M140,150 Q170,120 200,150 T260,150"
+                                stroke="currentColor"
+                                strokeWidth="45"
+                                fill="none"
+                                strokeLinecap="round"
+                                opacity="0.3"
+                            />
+                            <circle cx="180" cy="140" r="45" fill="currentColor" opacity="0.4" />
+                            <circle cx="230" cy="165" r="35" fill="currentColor" opacity="0.3" />
+                            <circle cx="120" cy="160" r="8" fill="currentColor" opacity="0.2" />
+                            <circle cx="280" cy="140" r="12" fill="currentColor" opacity="0.2" />
+                            <circle cx="210" cy="110" r="6" fill="currentColor" opacity="0.2" />
+                        </g>
+                    </svg>
+                </div>
+            </motion.div>
+        )}
+    </AnimatePresence>
+);
+
 const TypographyLarge = ({ text }: { text: string }) => (
     <div className="absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-20 rotate-[-15deg] whitespace-nowrap">
         <h1 className="font-display text-3xl sm:text-4xl md:text-6xl text-[#5c4d44] tracking-[0.2em]">{text}</h1>
@@ -158,6 +226,7 @@ const StaticMap: Record<string, any> = {
   'island': Mountains,
   'opera': () => <svg width="40" height="20" viewBox="0 0 40 20" className="text-[#3d312b]"><path d="M0,20 Q10,0 20,20 Q30,5 40,20" fill="none" stroke="currentColor"/></svg>,
   'whale': () => <svg width="30" height="20" viewBox="0 0 30 20" className="text-[#3d312b] opacity-50"><path d="M0,10 Q15,0 30,15" fill="none" stroke="currentColor"/></svg>,
+  'whale_tail': WhaleTail,
   'text_large': ({ label }: any) => <TypographyLarge text={label} />,
   'text_medium': ({ label }: any) => <TypographyMedium text={label} />,
   'text_small': ({ label }: any) => <span className="font-tech text-[8px] sm:text-[10px] uppercase tracking-[0.3em] text-[#5c4d44] opacity-50">{label}</span>
@@ -289,10 +358,158 @@ const WorldMapBackground = () => (
     </div>
 );
 
+// --- WHISPER SUB-COMPONENT ---
+const MagicWhisper = () => {
+    const whisperText = "I solemnly swear that I am up to something meaningful.";
+    const words = whisperText.split(" ");
+    const [cycle, setCycle] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCycle(prev => prev + 1);
+        }, 8000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.45,
+                delayChildren: 0.8
+            }
+        },
+        exit: {
+            opacity: 0,
+            filter: "blur(8px)",
+            scale: 1.05,
+            transition: { duration: 1.5, ease: "easeInOut" }
+        }
+    };
+
+    const wordVariants: Variants = {
+        hidden: { opacity: 0, y: 8 },
+        visible: {
+            opacity: 0.4,
+            y: 0,
+            transition: { duration: 1.5 }
+        }
+    };
+
+    return (
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 translate-x-8 -translate-y-6 pointer-events-none z-10 rotate-[8deg]">
+            <AnimatePresence mode="wait">
+                {cycle % 2 === 0 && (
+                    <motion.div
+                        key={cycle}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="relative flex flex-wrap gap-x-4 gap-y-1 max-w-[85vw]"
+                    >
+                        {words.map((word, i) => (
+                            <motion.span
+                                key={i}
+                                variants={wordVariants}
+                                className="font-['Tangerine'] font-semibold text-lg sm:text-2xl md:text-4xl text-[#3d312b] italic leading-tight"
+                            >
+                                {word}
+                            </motion.span>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+const SummonWhisper = () => {
+    const whisperText = "Summon anywhere, to see what comes next.";
+    const words = whisperText.split(" ");
+    const [cycle, setCycle] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCycle(prev => prev + 1);
+        }, 8000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.45,
+                delayChildren: 0.8
+            }
+        },
+        exit: {
+            opacity: 0,
+            filter: "blur(8px)",
+            scale: 1.05,
+            transition: { duration: 1.5, ease: "easeInOut" }
+        }
+    };
+
+    const wordVariants: Variants = {
+        hidden: { opacity: 0, y: 8 },
+        visible: {
+            opacity: 0.4,
+            y: 0,
+            transition: { duration: 1.5 }
+        }
+    };
+
+    return (
+        <div className="absolute left-[18%] top-[16%] pointer-events-none z-10">
+            <AnimatePresence mode="wait">
+                {cycle % 2 === 0 && (
+                    <motion.div
+                        key={cycle}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="relative flex flex-wrap gap-x-4 gap-y-1 max-w-[70vw]"
+                    >
+                        {words.map((word, i) => (
+                            <motion.span
+                                key={i}
+                                variants={wordVariants}
+                                className="font-['Tangerine'] font-semibold text-lg sm:text-2xl md:text-4xl text-[#3d312b] italic leading-tight"
+                            >
+                                {word}
+                            </motion.span>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions }) => {
   const [activeMemory, setActiveMemory] = useState<Memory | null>(null);
   const [hoveredMemoryId, setHoveredMemoryId] = useState<string | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [summonIndex, setSummonIndex] = useState<number>(-1);
+  const confirmIdRef = useRef(actions.confirmId);
+  const allowConfirmRef = useRef(false);
+
+  useEffect(() => {
+      if (MEMORIES.length === 0) return;
+      const defaultMemory = MEMORIES.find((mem) => mem.id === 'm_cali') ?? MEMORIES[0];
+      const defaultIndex = MEMORIES.findIndex((mem) => mem.id === defaultMemory.id);
+      setSummonIndex(defaultIndex === -1 ? 0 : defaultIndex);
+      setActiveMemory(defaultMemory);
+      const gate = window.setTimeout(() => {
+          allowConfirmRef.current = true;
+      }, 0);
+      return () => window.clearTimeout(gate);
+  }, []);
   
   useEffect(() => {
     if (activeMemory) {
@@ -306,19 +523,25 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
   }, [activeMemory]);
 
   const handleSummon = useCallback(() => {
-      const currentIndex = activeMemory ? MEMORIES.findIndex(m => m.id === activeMemory.id) : -1;
-      const nextIndex = (currentIndex + 1) % MEMORIES.length;
-      setActiveMemory(MEMORIES[nextIndex]);
-  }, [activeMemory]);
+      setSummonIndex((prev) => {
+          const nextIndex = (prev + 1) % MEMORIES.length;
+          setActiveMemory(MEMORIES[nextIndex]);
+          return nextIndex;
+      });
+  }, []);
 
   const closeMemory = useCallback(() => setActiveMemory(null), []);
 
   useEffect(() => {
-      if (actions.confirmId === 0) return;
+      if (!allowConfirmRef.current) return;
+      if (actions.confirmId === confirmIdRef.current) return;
+      confirmIdRef.current = actions.confirmId;
       if (!actions.confirmFocus) return;
       if (actions.confirmFocus.type === 'place') {
           const nextMemory = MEMORIES.find((mem) => mem.id === actions.confirmFocus.id);
           if (nextMemory) {
+              const idx = MEMORIES.findIndex(m => m.id === nextMemory.id);
+              setSummonIndex(idx === -1 ? -1 : idx);
               setActiveMemory(nextMemory);
           }
       }
@@ -366,6 +589,8 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
         onClick={closeMemory}
       >
           <WorldMapBackground />
+          <MagicWhisper />
+          <SummonWhisper />
           <FootstepsManager />
 
           {STATIC_ELEMENTS.map((el) => {
@@ -414,23 +639,23 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
                         e.stopPropagation();
                         actions.setFocus({ type: 'place', id: mem.id });
                         actions.confirm();
+                        const idx = MEMORIES.findIndex(m => m.id === mem.id);
+                        setSummonIndex(idx === -1 ? -1 : idx);
                         setActiveMemory(mem);
                     }}
                   >
+                      <InkSmudge active={isActive} />
                       <div className={`absolute -top-10 md:-top-12 left-1/2 -translate-x-1/2 flex flex-col items-center transition-all duration-300 ${isActive || isHovered ? 'scale-110' : 'group-hover:scale-110'}`}>
                           <div className={`bg-[#e8dfcf] border px-1.5 py-0.5 shadow-sm transition-colors duration-300 ${isActive || isHovered ? 'border-[#8b0000]' : 'border-[#5c4d44]'}`}>
-                              <span className={`font-display text-[8px] md:text-xs font-bold tracking-widest ${isActive || isHovered ? 'text-[#8b0000]' : 'text-[#5c4d44]'}`}>
+                              <span className={`font-display text-[8px] md:text-xs font-bold tracking-widest whitespace-nowrap ${isActive || isHovered ? 'text-[#8b0000]' : 'text-[#5c4d44]'}`}>
                                   {mem.location}
                               </span>
                           </div>
                           <div className={`w-0.5 h-3 md:h-4 transition-colors duration-300 ${isActive || isHovered ? 'bg-[#8b0000]' : 'bg-[#5c4d44]'}`}></div>
                       </div>
                       <BuildingComponent active={isActive} />
-                      {(isActive || isHovered) && (
-                        <div className={`absolute inset-[-30px] md:inset-[-40px] border rounded-full pointer-events-none ${isActive ? 'border-[#8b0000] opacity-30 animate-pulse' : 'border-[#8b0000] opacity-20'} `}></div>
-                      )}
                       {isHovered && !isActive && (
-                        <div className="absolute inset-[-18px] md:inset-[-28px] border border-[#8b0000] rounded-full opacity-30 blur-[2px] pointer-events-none"></div>
+                        <div className="absolute inset-[-24px] md:inset-[-36px] rounded-full border border-white/70 opacity-80 blur-[1px] shadow-[0_0_18px_rgba(255,255,255,0.5)] pointer-events-none"></div>
                       )}
                   </div>
               );
@@ -461,42 +686,38 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
         </button>
       </div>
 
-      <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-50 flex gap-2 sm:gap-4">
-        {activeMemory && (
-            <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                onClick={closeMemory}
-                className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#8b0000] text-[#e8dfcf] font-display text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-[#5c4d44] transition-all rounded-sm shadow-md"
-            >
-                <ZoomOut size={12} /> Close
-            </motion.button>
-        )}
-        <button 
-            onClick={handleSummon}
-            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 border-2 border-[#5c4d44] bg-[#e8dfcf] text-[#5c4d44] font-display text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-[#3d312b] hover:text-[#e8dfcf] transition-all shadow-[2px_2px_0px_#5c4d44] sm:shadow-[4px_4px_0px_#5c4d44] hover:shadow-[1px_1px_0px_#5c4d44] active:translate-y-[2px] active:shadow-none"
-        >
-            <Shuffle size={12} /> Jump
-        </button>
-      </div>
+      <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-50"></div>
 
       {/* 4. SIDEBAR DETAIL (Journal) */}
       <AnimatePresence>
         {activeMemory && (
             <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="absolute top-0 right-0 w-full sm:w-[450px] h-full bg-[#f2ebd9] shadow-[-20px_0_50px_rgba(61,49,43,0.2)] z-40 flex flex-col border-l-2 border-[#5c4d44]"
+                initial={{ x: '100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: '100%', opacity: 0 }}
+                transition={{ type: "spring", stiffness: 220, damping: 28 }}
+                className="absolute top-0 right-0 w-full sm:w-[560px] h-full z-[100] flex flex-col overflow-hidden"
             >
-                <div className="h-14 sm:h-16 bg-[#5c4d44] flex items-center justify-between px-6 text-[#e8dfcf]">
-                    <span className="font-display tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs uppercase">Journal Entry</span>
-                    <button onClick={closeMemory} className="hover:text-white transition-colors"><X size={20}/></button>
+                <div className="absolute inset-0 bg-white/5 backdrop-blur-[40px] border-l border-white/40 shadow-[-40px_0_80px_rgba(0,0,0,0.2)] z-0" />
+                <div className="absolute inset-0 border-t border-white/20 z-[1] pointer-events-none" />
+                <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_0%_0%,rgba(255,255,255,0.15)_0%,transparent_50%)] z-[1] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/noisy.png')] pointer-events-none z-[2]" />
+                <div className="relative z-20 h-20 sm:h-24 flex items-center justify-between px-8 bg-white/5 border-b border-white/10 backdrop-blur-md">
+                    <span className="font-display tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs uppercase text-[#5c4d44] font-bold">Journal Entry</span>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleSummon}
+                            className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 border border-white/20 text-[#5c4d44] font-tech text-[9px] uppercase tracking-[0.3em] hover:bg-white/20 transition-all shadow-sm"
+                        >
+                            <Shuffle size={12} className="text-[#8b0000]" /> Jump
+                        </button>
+                        <button onClick={closeMemory} className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/15 border border-white/10 transition-all text-[#5c4d44] group shadow-sm">
+                            <X size={18} className="group-hover:rotate-90 transition-transform duration-300" />
+                        </button>
+                    </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 sm:p-10 relative custom-scrollbar">
+                <div className="relative z-20 flex-1 overflow-y-auto p-8 sm:p-12 custom-scrollbar">
                     <div className="inline-block border border-[#8b0000] text-[#8b0000] px-2 py-0.5 sm:py-1 font-tech text-[8px] sm:text-[10px] uppercase tracking-widest mb-4 sm:mb-6">
                         {activeMemory.date}
                     </div>
@@ -516,8 +737,27 @@ export const PersonalGalaxy: React.FC<PersonalGalaxyProps> = ({ onBack, actions 
 
                     <div className="p-4 sm:p-6 bg-[#e8dfcf] border border-[#d6cbb5] rounded-sm">
                         <span className="block font-display text-[8px] sm:text-[10px] uppercase tracking-widest text-[#8c7b70] mb-2">Primary Emotion</span>
-                        <span className="font-hand text-xl sm:text-2xl text-[#8b0000]">{activeMemory.emotion}</span>
+                        <span className="font-hand text-2xl sm:text-3xl text-[#8b0000]">{activeMemory.emotion}</span>
                     </div>
+
+                    {activeMemory.mediaGif && (
+                        <div className="mt-6 sm:mt-8">
+                            <div className="relative scale-[1.05] origin-center aspect-[13/8] w-full">
+                                <img
+                                    src={FRAME_IMAGE}
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-10 translate-y-[3.5px]"
+                                />
+                                <div className="absolute inset-[18px]">
+                                    <img
+                                        src={activeMemory.mediaGif}
+                                        alt={activeMemory.mediaAlt ?? `${activeMemory.location} moving portrait`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </motion.div>
         )}

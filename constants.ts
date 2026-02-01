@@ -24,7 +24,7 @@ export const MEMORIES: Memory[] = [
     location: 'United States',
     icon: 'bridge',
     coordinates: { x: 12, y: 32 }, // West Coast
-    mediaGif: '/assets/media/united-states.gif',
+    mediaGif: '/media/united-states.gif',
     mediaAlt: 'Golden Gate bridge at dusk'
   },
   {
@@ -37,7 +37,7 @@ export const MEMORIES: Memory[] = [
     location: 'Paris',
     icon: 'tower',
     coordinates: { x: 48, y: 22 }, // Western Europe
-    mediaGif: '/assets/media/paris.gif',
+    mediaGif: '/media/paris.gif',
     mediaAlt: 'Paris street scene'
   },
   {
@@ -50,7 +50,7 @@ export const MEMORIES: Memory[] = [
     location: 'China',
     icon: 'pagoda',
     coordinates: { x: 75, y: 32 }, // East Asia
-    mediaGif: '/assets/media/china.gif',
+    mediaGif: '/media/china.gif',
     mediaAlt: 'Pagoda in mist'
   },
   {
@@ -63,12 +63,12 @@ export const MEMORIES: Memory[] = [
     location: 'Australia',
     icon: 'skyscraper',
     coordinates: { x: 88, y: 80 }, // Australia
-    mediaGif: '/assets/media/perth.gif',
+    mediaGif: '/media/perth.gif',
     mediaAlt: 'Ocean shoreline at sunset'
   }
 ];
 
-export const FRAME_IMAGE = '/assets/media/frame.png';
+export const FRAME_IMAGE = '/media/frame.png';
 
 export const STATIC_ELEMENTS = [
   // --- TEXTURE LABELS (Typography layer) ---

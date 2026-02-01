@@ -173,7 +173,7 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
       <div className="relative w-full h-full flex items-center justify-center perspective-[1200px] overflow-visible z-20 -translate-y-24">
          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-[820px] sm:w-[1080px] pointer-events-none z-0">
             <img
-              src="/assets/media/pensive.png"
+              src="/media/pensive.png"
               alt=""
               className="w-full h-auto opacity-90"
             />

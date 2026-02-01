@@ -34,7 +34,8 @@ export const useActionLayer = (): ActionLayer => {
   const [scrollSignal, setScrollSignal] = useState({ id: 0, delta: 0 });
 
   const confirm = useCallback((target?: FocusTarget | null) => {
-    setConfirmFocus(target ?? focus);
+    const next = target === undefined ? focus : target;
+    setConfirmFocus(next);
     setConfirmId((id) => id + 1);
   }, [focus]);
   const summon = useCallback(() => setSummonId((id) => id + 1), []);

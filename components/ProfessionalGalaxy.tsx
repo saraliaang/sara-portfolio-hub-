@@ -84,8 +84,9 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
   useEffect(() => {
     if (actions.scrollSignal.id === 0) return;
     if (!actions.scrollSignal.delta) return;
+    if (detailsOpen) return;
     setRotation((prev) => prev - actions.scrollSignal.delta * 6);
-  }, [actions.scrollSignal]);
+  }, [actions.scrollSignal, detailsOpen]);
 
   useEffect(() => {
     if (actions.focus?.type !== 'project') return;
@@ -127,6 +128,10 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
     .split('\n')
     .map((item) => item.trim())
     .filter(Boolean);
+  const isGithubFocused =
+    actions.focus?.type === 'link' && actions.focus.url === activeProject.githubLink;
+  const isDemoFocused =
+    actions.focus?.type === 'link' && actions.focus.url === activeProject.demoLink;
 
   return (
     <div 
@@ -380,7 +385,11 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                               e.preventDefault();
                               window.open(activeProject.githubLink, '_blank', 'noopener,noreferrer');
                             }}
-                            className="inline-flex items-center justify-center gap-2 px-7 py-3 bg-cyan-400 text-black font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-white transition-all rounded-sm shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+                            className={`inline-flex items-center justify-center gap-2 px-7 py-3 bg-cyan-400 text-black font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all rounded-sm shadow-[0_0_20px_rgba(34,211,238,0.3)] ${
+                              isGithubFocused
+                                ? 'ring-2 ring-cyan-200/80 shadow-[0_0_30px_rgba(34,211,238,0.6)]'
+                                : 'hover:bg-white'
+                            }`}
                           >
                             <Globe size={12} /> Github Code <ArrowUpRight size={12} />
                           </a>
@@ -400,7 +409,11 @@ export const ProfessionalGalaxy: React.FC<ProfessionalGalaxyProps> = ({ onBack, 
                               e.preventDefault();
                               window.open(activeProject.demoLink, '_blank', 'noopener,noreferrer');
                             }}
-                            className="inline-flex items-center justify-center gap-2 px-7 py-3 bg-transparent border border-cyan-400/40 text-cyan-100 font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:border-cyan-200 hover:text-white transition-all rounded-sm"
+                            className={`inline-flex items-center justify-center gap-2 px-7 py-3 bg-transparent border border-cyan-400/40 text-cyan-100 font-tech text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all rounded-sm ${
+                              isDemoFocused
+                                ? 'border-cyan-200 text-white ring-1 ring-cyan-200/70 shadow-[0_0_20px_rgba(34,211,238,0.45)]'
+                                : 'hover:border-cyan-200 hover:text-white'
+                            }`}
                           >
                             Live Demo <ArrowUpRight size={12} />
                           </a>

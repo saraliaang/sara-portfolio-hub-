@@ -165,6 +165,7 @@ export default function App() {
     }
   }, [actions.confirmId, actions.confirmFocus]);
 
+
   useEffect(() => {
     if (actions.dismissId === 0) return;
     setGuideOpen(false);

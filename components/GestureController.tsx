@@ -156,9 +156,9 @@ export const GestureController: React.FC<GestureControllerProps> = ({
         if (gestureResult) {
           const handedness = (results as any)?.handedness?.[0]?.[0]?.categoryName;
           const handOffset = handedness === 'Right' ? 0.04 : handedness === 'Left' ? -0.04 : 0;
-          const gain = 1.12;
+          const gain = 1.12; 
           const cx = (1 - gestureResult.cursor.x + handOffset) - 0.5;
-          const cy = gestureResult.cursor.y + 0.5;
+          const cy = gestureResult.cursor.y - 0.2;
           const cursor = {
             x: (cx * gain + 0.5) * window.innerWidth,
             y: (cy * gain + 0.5) * window.innerHeight,

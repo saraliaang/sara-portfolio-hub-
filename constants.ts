@@ -134,8 +134,8 @@ export const PROJECTS: Project[] = [
     technicalExecution: 'Emoji-based weekly check-ins to reduce emotional friction.\nPrivate self-reflection history for personal awareness.\nManager dashboards showing trends, not individuals.\nLight-touch gamification through streak points and a Mental Garden, where consistent check-ins nurture growth — encouraging habit formation without pressure.',
     futureHorizon: 'Turning trend insights into gentle, real-world actions — such as a coffee token or a pause prompt — supporting care and de-escalation beyond the screen.',
     techStack: ['React', 'Django REST', 'PostgreSQL', 'Data visualisation'],
-    githubLink: 'https://github.com/SheCodesAus/full-stack-frogs_frontend/tree/main/teampulse-frontend',
-    demoLink: 'https://teampulse-app.netlify.app/',
+    githubLink: 'https://github.com/saraliaang/teampulse',
+    demoLink: 'https://team-pulse-app.netlify.app/manager-dashboard/',
     impact: 'Reduced incident response time by 40%.'
   },
   {

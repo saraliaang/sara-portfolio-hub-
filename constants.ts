@@ -120,7 +120,7 @@ export const PROJECTS: Project[] = [
     technicalExecution: 'Gesture-ready input layer with fallback cursor control.\nWand-inspired cursor and interactive particle fields to animate each world.\nVoyager map is inspired by The Marauder’s Map with location icons, whisper-like text, ink spill selection, and wandering footprints.\nAlchemist uses a pensive backdrop with floating project cards for spell-like navigation.',
     futureHorizon: 'Keep expanding the experience with new worlds, richer interactions, and updated gesture-driven journeys.',
     techStack: ['MediaPipe', 'TypeScript', 'React', 'Framer Motion', 'Tailwind'],
-    githubLink: 'https://github.com/saraliaang/sara-porfolio-hub-',
+    githubLink: 'https://github.com/saraliaang/sara-portfolio-hub-',
     demoLink: 'https://saralianghub.netlify.app/',
     impact: 'Turned a prototype into a shippable, immersive experience.'
   },

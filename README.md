@@ -6,8 +6,7 @@ A gesture-enabled, cinematic interactive portfolio experience blending personal 
 
 👉 **Demo Video:** <gif>
 
-![demo video](docs/sara-porfolio-demo.gif)
-
+https://github.com/user-attachments/assets/318e39bd-3ba8-4671-9fe8-7d08cdf936cf
 
 ## Table of Contents
 - [Design & Architecture](#-design--architecture)

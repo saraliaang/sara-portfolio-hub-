@@ -6,7 +6,10 @@ A gesture-enabled, cinematic interactive portfolio experience blending personal 
 
 👉 **Demo Video:** <gif>
 
-https://github.com/user-attachments/assets/318e39bd-3ba8-4671-9fe8-7d08cdf936cf
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/f9f1a24c-29d1-41ed-8141-5630f9a1819d" controls="controls" style="max-width: 100%;">
+  </video>
+</div>
 
 ## Table of Contents
 - [Design & Architecture](#-design--architecture)
